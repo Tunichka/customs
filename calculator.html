@@ -729,33 +729,57 @@
 
         // Добавление пункта "Мои заявки" в навигацию
        function addRequestsMenuItem() {
+    console.log('addRequestsMenuItem вызвана');
     const mainMenu = document.getElementById('mainMenu');
-    if (!mainMenu) return;
+    if (!mainMenu) {
+        console.log('mainMenu не найден!');
+        return;
+    }
+    
+    console.log('mainMenu найден, детей:', mainMenu.children.length);
     
     // Проверяем, не добавлен ли уже пункт
     const existingItem = Array.from(mainMenu.children).find(
         li => li.querySelector('a')?.getAttribute('href') === 'application.html'
     );
     
-    if (!existingItem) {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = 'application.html';
-        a.textContent = 'Мои заявки';
-        li.appendChild(a);
+    if (existingItem) {
+        console.log('Пункт "Мои заявки" уже существует');
+        return;
+    }
+    
+    console.log('Создаем новый пункт "Мои заявки"');
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = 'application.html';
+    a.textContent = 'Мои заявки';
+    li.appendChild(a);
+    
+    // Находим пункт "Калькулятор ВЭД"
+    const calculatorItem = Array.from(mainMenu.children).find(
+        li => li.querySelector('a')?.getAttribute('href') === 'calculator.html'
+    );
+    
+    console.log('Пункт "Калькулятор ВЭД" найден:', calculatorItem ? 'да' : 'нет');
+    
+    if (calculatorItem) {
+        console.log('Вставляем пункт после калькулятора');
+        calculatorItem.insertAdjacentElement('afterend', li);
         
-        // Находим пункт "Калькулятор ВЭД"
-        const calculatorItem = Array.from(mainMenu.children).find(
-            li => li.querySelector('a')?.getAttribute('href') === 'calculator.html'
+        // Проверяем, куда реально вставилось
+        const newItem = Array.from(mainMenu.children).find(
+            li => li.querySelector('a')?.getAttribute('href') === 'application.html'
         );
-        
-        if (calculatorItem) {
-            // Вставляем ПОСЛЕ калькулятора
-            calculatorItem.insertAdjacentElement('afterend', li);
-        } else {
-            // Если калькулятор не найден (маловероятно), добавляем в конец
-            mainMenu.appendChild(li);
+        if (newItem) {
+            const items = Array.from(mainMenu.children).map(li => {
+                const link = li.querySelector('a');
+                return link ? link.textContent : 'нет ссылки';
+            });
+            console.log('Текущий порядок меню:', items);
         }
+    } else {
+        console.log('Калькулятор не найден, добавляем в конец');
+        mainMenu.appendChild(li);
     }
 }
 
