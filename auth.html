@@ -466,7 +466,9 @@
                     <li><a href="index.html#services">Услуги</a></li>
                     <li><a href="calculator.html">Калькулятор ВЭД</a></li>
                     <li><a href="index.html#directions">Направления</a></li>
-                    <li><a href="application.html">Мои заявки</a></li>
+                    <li id="navApplications" class="auth-required" style="display: none;">
+                        <a href="application.html" class="active">Мои заявки</a>
+                    </li>
                     <li class="dropdown">
                     <a href="#" class="dropdown-toggle">О нас <i class="fas fa-chevron-down"></i></a>
                     <ul class="dropdown-menu">
@@ -1266,10 +1268,20 @@
                     delete currentUser.password;
                 }
                 showUserProfile(currentUser);
+                updateProtectedMenuItems(true);
             } else {
                 showAuthForms();
+                updateProtectedMenuItems(false);
             }
         }
+
+        // Функция для обновления видимости защищенных пунктов меню
+function updateProtectedMenuItems(isAuthenticated) {
+    const protectedItems = document.querySelectorAll('.auth-required');
+    protectedItems.forEach(item => {
+        item.style.display = isAuthenticated ? 'block' : 'none';
+    });
+}
 
         // ========== НАСТРОЙКА ВЫПАДАЮЩЕГО МЕНЮ ==========
         function setupUserMenu() {
@@ -1474,6 +1486,8 @@
             if (userIcon) {
                 userIcon.querySelector('.user-text').textContent = 'Войти';
             }
+
+            updateProtectedMenuItems(false);
         }
 
         // ========== РАСЧЕТ ВОЗРАСТА ==========
@@ -2049,6 +2063,7 @@
             localStorage.removeItem('user');
             sessionStorage.removeItem('user');
             showAuthForms();
+            updateProtectedMenuItems(false);
             showNotification('Вы успешно вышли из системы');
         });
         
