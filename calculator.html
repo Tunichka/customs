@@ -738,10 +738,11 @@
     
     console.log('mainMenu найден, детей:', mainMenu.children.length);
     
-    // Проверяем, не добавлен ли уже пункт
-    const existingItem = Array.from(mainMenu.children).find(
-        li => li.querySelector('a')?.getAttribute('href') === 'application.html'
-    );
+    // Проверяем, не добавлен ли уже пункт "Мои заявки"
+    const existingItem = Array.from(mainMenu.children).find(li => {
+        const link = li.querySelector('a');
+        return link && (link.getAttribute('href') === 'application.html' || link.textContent.trim() === 'Мои заявки');
+    });
     
     if (existingItem) {
         console.log('Пункт "Мои заявки" уже существует');
@@ -755,10 +756,29 @@
     a.textContent = 'Мои заявки';
     li.appendChild(a);
     
-    // Находим пункт "Калькулятор ВЭД"
-    const calculatorItem = Array.from(mainMenu.children).find(
-        li => li.querySelector('a')?.getAttribute('href') === 'calculator.html'
-    );
+    // Ищем пункт "Калькулятор ВЭД" ПО ТЕКСТУ (более надежно)
+    let calculatorItem = null;
+    
+    // Способ 1: Поиск по тексту ссылки
+    for (let i = 0; i < mainMenu.children.length; i++) {
+        const item = mainMenu.children[i];
+        const link = item.querySelector('a');
+        if (link && link.textContent.trim() === 'Калькулятор ВЭД') {
+            calculatorItem = item;
+            console.log('Калькулятор найден по тексту!');
+            break;
+        }
+    }
+    
+    // Способ 2: Если не нашли по тексту, ищем по href
+    if (!calculatorItem) {
+        calculatorItem = Array.from(mainMenu.children).find(
+            li => li.querySelector('a')?.getAttribute('href') === 'calculator.html'
+        );
+        if (calculatorItem) {
+            console.log('Калькулятор найден по href!');
+        }
+    }
     
     console.log('Пункт "Калькулятор ВЭД" найден:', calculatorItem ? 'да' : 'нет');
     
@@ -766,19 +786,14 @@
         console.log('Вставляем пункт после калькулятора');
         calculatorItem.insertAdjacentElement('afterend', li);
         
-        // Проверяем, куда реально вставилось
-        const newItem = Array.from(mainMenu.children).find(
-            li => li.querySelector('a')?.getAttribute('href') === 'application.html'
-        );
-        if (newItem) {
-            const items = Array.from(mainMenu.children).map(li => {
-                const link = li.querySelector('a');
-                return link ? link.textContent : 'нет ссылки';
-            });
-            console.log('Текущий порядок меню:', items);
-        }
+        // Проверяем результат
+        const newItems = Array.from(mainMenu.children).map(li => {
+            const link = li.querySelector('a');
+            return link ? link.textContent.trim() : 'без ссылки';
+        });
+        console.log('Новый порядок меню:', newItems);
     } else {
-        console.log('Калькулятор не найден, добавляем в конец');
+        console.log('Калькулятор не найден! Добавляем в конец');
         mainMenu.appendChild(li);
     }
 }
