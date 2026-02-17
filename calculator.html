@@ -728,32 +728,36 @@
         }
 
         // Добавление пункта "Мои заявки" в навигацию
-        function addRequestsMenuItem() {
-            const mainMenu = document.getElementById('mainMenu');
-            if (!mainMenu) return;
-            
-            const existingItem = Array.from(mainMenu.children).find(
-                li => li.querySelector('a')?.getAttribute('href') === 'application.html'
-            );
-            
-            if (!existingItem) {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = 'application.html';
-                a.textContent = 'Мои заявки';
-                li.appendChild(a);
-                
-                const calculatorItem = Array.from(mainMenu.children).find(
-                    li => li.querySelector('a')?.getAttribute('href') === 'calculator.html'
-                );
-                
-                if (calculatorItem) {
-                    calculatorItem.insertAdjacentElement('afterend', li);
-                } else {
-                    mainMenu.appendChild(li);
-                }
-            }
+       function addRequestsMenuItem() {
+    const mainMenu = document.getElementById('mainMenu');
+    if (!mainMenu) return;
+    
+    // Проверяем, не добавлен ли уже пункт
+    const existingItem = Array.from(mainMenu.children).find(
+        li => li.querySelector('a')?.getAttribute('href') === 'application.html'
+    );
+    
+    if (!existingItem) {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = 'application.html';
+        a.textContent = 'Мои заявки';
+        li.appendChild(a);
+        
+        // Находим пункт "Калькулятор ВЭД"
+        const calculatorItem = Array.from(mainMenu.children).find(
+            li => li.querySelector('a')?.getAttribute('href') === 'calculator.html'
+        );
+        
+        if (calculatorItem) {
+            // Вставляем ПОСЛЕ калькулятора
+            calculatorItem.insertAdjacentElement('afterend', li);
+        } else {
+            // Если калькулятор не найден (маловероятно), добавляем в конец
+            mainMenu.appendChild(li);
         }
+    }
+}
 
         // Удаление пункта "Мои заявки" из навигации
         function removeRequestsMenuItem() {
