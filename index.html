@@ -834,6 +834,19 @@
     }
 }
 
+function updateMenuVisibility() {
+        const navApplications = document.getElementById('navApplications');
+        if (!navApplications) return;
+        
+        if (currentUser) {
+            // Пользователь авторизован - показываем пункт "Мои заявки"
+            navApplications.style.display = 'list-item';
+        } else {
+            // Пользователь не авторизован - скрываем пункт "Мои заявки"
+            navApplications.style.display = 'none';
+        }
+    }
+
 
         // Обновление интерфейса для авторизованного пользователя
         function updateUserInterface(user) {
