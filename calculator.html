@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор ВЭД | ТаможСервис</title>
+    <link rel="stylesheet" href="calculator.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Дополнительные стили для профиля пользователя */
+        .header-actions {
+            position: relative;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        
+        .user-icon:hover {
+            background-color: #d0ecff;
+            transform: translateY(-2px);
+        }
+        
+        .user-icon i {
+            font-size: 20px;
+        }
+        
+        .user-text {
+    font-size: 15px;
+    font-weight: 500;
+}
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 250px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-top: 10px;
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .user-dropdown.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .user-dropdown-header {
+            padding: 15px;
+            background: linear-gradient(135deg, #2c3e50, #2980b9);
+            color: white;
+        }
+        
+        .user-dropdown-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .user-dropdown-email {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .user-dropdown-item {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .user-dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: #2980b9;
+        }
+        
+        .user-dropdown-item i {
+            width: 20px;
+            color: #2980b9;
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background-color: #eee;
+            margin: 5px 0;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Стили для выпадающего меню */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdown-toggle i {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.dropdown:hover .dropdown-toggle i {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 200px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    border: 1px solid rgba(0, 40, 104, 0.08);
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(5px);
+}
+
+.dropdown-menu li {
+    list-style: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    float: none;
+    clear: both;
+}
+
+.dropdown-menu a {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #333;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    white-space: nowrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.dropdown-menu a i {
+    width: 18px;
+    color: #002868;
+    font-size: 14px;
+    text-align: center;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(0, 40, 104, 0.05);
+    color: #002868;
+}
+
+/* Дополнительные стили для активного состояния */
+.dropdown-menu a.active {
+    background: #002868;
+    color: white;
+}
+
+.dropdown-menu a.active i {
+    color: white;
+}
+
+/* Стили для разделителя в меню */
+.dropdown-divider {
+    height: 1px;
+    background: rgba(0, 40, 104, 0.08);
+    margin: 8px 0;
+}
+
+/* Важно! Переопределяем возможные глобальные стили */
+.dropdown-menu li,
+.dropdown-menu li * {
+    display: block;
+}
+
+.dropdown-menu ul,
+.dropdown-menu li,
+.dropdown-menu a {
+    float: none;
+}
+
+.dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu li {
+    display: list-item;
+}
+
+/* Выравнивание иконок и текста */
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 24px;
+}
+
+.dropdown-menu a i {
+    width: 18px;
+    font-size: 15px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Увеличиваем размер окна */
+.dropdown-menu {
+    min-width: 220px;
+    padding: 12px 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #002868;
+}
+
+.logo svg,
+.logo img {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+            <img src="logo_icon.svg" alt="ТаможСервис" width="32" height="32">
+            Тамож<span>Сервис</span>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul id="mainMenu">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="index.html#services">Услуги</a></li>
+                    <li><a href="calculator.html">Калькулятор ВЭД</a></li>
+                    <li><a href="index.html#directions">Направления</a></li>
+                    <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">О нас <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="about.html"><i class="fas fa-building"></i> О компании</a></li>
+                        <li><a href="#contacts"><i class="fas fa-map-marker-alt"></i> Контакты</a></li>
+                        </ul>
+                    </li>
+                    </ul>
+                </nav>
+            <div class="header-actions user-menu" id="userMenuContainer">
+                <a href="auth.html" class="user-icon" id="userIcon">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="user-text">Войти</span>
+                </a>
+                <!-- Выпадающее меню для авторизованного пользователя -->
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-header">
+                        <div class="user-dropdown-name" id="dropdownUserName">Пользователь</div>
+                        <div class="user-dropdown-email" id="dropdownUserEmail">email@example.com</div>
+                    </div>
+                    <a href="auth.html" class="user-dropdown-item">
+                        <i class="fas fa-user"></i>
+                        Мой профиль
+                    </a>
+                    <a href="application.html" class="user-dropdown-item">
+                        <i class="fas fa-clipboard-list"></i>
+                        Мои заявки
+                    </a>
+                    <a href="calculator.html" class="user-dropdown-item">
+                        <i class="fas fa-calculator"></i>
+                        Калькулятор
+                    </a>
+                    <div class="user-dropdown-divider"></div>
+                    <a href="#" class="user-dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Выйти
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Таможенное оформление и оформление под ключ</h1>
+            <p>Импорт, экспорт и перевозка грузов без риска и задержек</p>
+            <div class="cta-buttons">
+                <a href="#calculator" class="btn">Рассчитать стоимость</a>
+                <a href="#contact-form" class="btn btn-outline">Оставить заявку</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section class="calculator-section" id="calculator">
+        <div class="container">
+            <h2 class="section-title">Калькулятор ВЭД</h2>
+            <div class="calculator-container">
+                <h3 class="calculator-title">Рассчитайте стоимость таможенного оформления</h3>
+                
+                <form id="vedCalculator" class="calculator-form">
+                    <div class="calc-form-group">
+                        <label for="country">Страна отправления</label>
+                        <select id="country" name="country" required>
+                            <option value="">Выберите страну</option>
+                            <option value="china">Китай</option>
+                            <option value="belarus">Беларусь</option>
+                            <option value="russia">Россия</option>
+                            <option value="eu">ЕС</option>
+                            <option value="usa">США</option>
+                            <option value="other">Другая</option>
+                        </select>
+                    </div>
+                    
+                    <div class="calc-form-group">
+                        <label for="productType">Тип товара</label>
+                        <select id="productType" name="productType" required>
+                            <option value="">Выберите тип товара</option>
+                            <option value="electronics">Электроника</option>
+                            <option value="clothes">Одежда и текстиль</option>
+                            <option value="auto">Автозапчасти</option>
+                            <option value="food">Продукты питания</option>
+                            <option value="machinery">Оборудование</option>
+                            <option value="chemicals">Химическая продукция</option>
+                            <option value="furniture">Мебель</option>
+                            <option value="other">Другое</option>
+                        </select>
+                    </div>
+                    
+                    <div class="calc-form-group">
+                        <label for="customsValue">Таможенная стоимость товара (USD)</label>
+                        <input type="number" id="customsValue" name="customsValue" min="0" step="100" placeholder="10000" required>
+                        <small>Стоимость товара по контракту</small>
+                    </div>
+                    
+                    <div class="calc-form-group">
+                        <label for="weight">Вес груза (кг)</label>
+                        <input type="number" id="weight" name="weight" min="1" step="1" placeholder="1000" required>
+                        <small>Общий вес груза в килограммах</small>
+                    </div>
+                    
+                    <div class="calc-form-group">
+                        <label for="transportType">Тип транспорта</label>
+                        <select id="transportType" name="transportType" required>
+                            <option value="">Выберите транспорт</option>
+                            <option value="auto">Автомобильный</option>
+                            <option value="rail">Железнодорожный</option>
+                            <option value="air">Авиационный</option>
+                            <option value="sea">Морской</option>
+                        </select>
+                    </div>
+                    
+                    <div class="calc-form-group">
+                        <label for="customsRegime">Таможенный режим</label>
+                        <select id="customsRegime" name="customsRegime" required>
+                            <option value="">Выберите режим</option>
+                            <option value="import">Импорт</option>
+                            <option value="export">Экспорт</option>
+                            <option value="transit">Транзит</option>
+                        </select>
+                    </div>
+                    
+                    <div class="calc-form-group full-width" id="tnvedPreviewContainer" style="display: none;">
+                        <div class="tnved-preview">
+                            <h4>Предварительно определенный код ТН ВЭД:</h4>
+                            <div class="tnved-code-display" id="tnvedCodePreview">0000 00 000 0</div>
+                            <div class="tnved-description" id="tnvedDescriptionPreview">
+                                Код сгенерирован на основе выбранных параметров
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="calc-form-group full-width">
+                        <label for="additionalServices">Дополнительные услуги</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px;">
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" name="additionalServices" value="insurance"> Страхование груза
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" name="additionalServices" value="storage"> Временное хранение
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" name="additionalServices" value="certification"> Сертификация
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 5px;">
+                                <input type="checkbox" name="additionalServices" value="consultation"> Консультация по ВЭД
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="calc-form-group full-width">
+                        <label for="urgency">Срочность оформления</label>
+                        <select id="urgency" name="urgency">
+                            <option value="standard">Стандартное (5-7 дней)</option>
+                            <option value="express">Экспресс (2-3 дня)</option>
+                            <option value="urgent">Срочное (24 часа)</option>
+                        </select>
+                    </div>
+                </form>
+                
+                <div class="calc-results" id="calcResults" style="display: none;">
+                    <h3>Результаты расчета</h3>
+                    
+                    <div class="calc-result-item">
+                        <span>Сгенерированный код ТН ВЭД:</span>
+                        <span class="calc-result-value" id="resultTnvedCode">0000 00 000 0</span>
+                    </div>
+                    
+                    <div class="tnved-info">
+                        <strong>Основание кода:</strong> <span id="resultTnvedBasis">Страна: , Тип: </span>
+                    </div>
+                    
+                    <div class="calc-result-item">
+                        <span>Ставка таможенной пошлины:</span>
+                        <span class="calc-result-value" id="resultDutyRate">0%</span>
+                    </div>
+                    
+                    <div class="calc-result-item">
+                        <span>Таможенная пошлина:</span>
+                        <span class="calc-result-value" id="customsDuty">0 USD</span>
+                    </div>
+                    <div class="calc-result-item">
+                        <span>НДС:</span>
+                        <span class="calc-result-value" id="vat">0 USD</span>
+                    </div>
+                    <div class="calc-result-item">
+                        <span>Таможенные сборы:</span>
+                        <span class="calc-result-value" id="customsFees">0 USD</span>
+                    </div>
+                    <div class="calc-result-item">
+                        <span>Транспортные расходы:</span>
+                        <span class="calc-result-value" id="transportCost">0 USD</span>
+                    </div>
+                    <div class="calc-result-item">
+                        <span>Наши услуги:</span>
+                        <span class="calc-result-value" id="serviceFee">0 USD</span>
+                    </div>
+                    <div class="calc-result-item">
+                        <span>Дополнительные услуги:</span>
+                        <span class="calc-result-value" id="additionalCost">0 USD</span>
+                    </div>
+                    <div class="calc-result-item total">
+                        <span>Общая стоимость:</span>
+                        <span class="calc-result-value" id="totalCost">0 USD</span>
+                    </div>
+                    <div class="calc-result-item">
+                        <span>Примерные сроки:</span>
+                        <span class="calc-result-value" id="timeline">5-7 дней</span>
+                    </div>
+                </div>
+                
+                <div class="calc-actions">
+                    <button type="button" class="calc-btn" id="calculateBtn">Рассчитать</button>
+                    <button type="button" class="calc-btn reset" id="resetBtn">Сбросить</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">Наши услуги</h2>
+            <div class="service-cards">
+                <div class="service-card">
+                    <h3>Таможенное оформление</h3>
+                    <p>Полный комплекс услуг по таможенному оформлению импортных и экспортных грузов.</p>
+                    <ul>
+                        <li>Подготовка документов</li>
+                        <li>Расчет таможенных платежей</li>
+                        <li>Взаимодействие с таможней</li>
+                        <li>Оформление разрешительных документов</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <h3>Логистика и перевозки</h3>
+                    <p>Организация перевозки грузов всеми видами транспорта.</p>
+                    <ul>
+                        <li>Автомобильные перевозки</li>
+                        <li>Железнодорожные перевозки</li>
+                        <li>Авиаперевозки</li>
+                        <li>Мультимодальные перевозки</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <h3>Консультации по ВЭД</h3>
+                    <p>Профессиональные консультации по внешнеэкономической деятельности.</p>
+                    <ul>
+                        <li>Анализ контрактов</li>
+                        <li>Таможенное законодательство</li>
+                        <li>Сертификация товаров</li>
+                        <li>Валютный контроль</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Form -->
+    <section class="contact" id="contact-form">
+        <div class="container">
+            <h2 class="section-title">Оставить заявку на консультацию</h2>
+            <div class="contact-container">
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Имя</label>
+                            <input type="text" id="name" name="name" required placeholder="Введите ваше имя">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Телефон</label>
+                            <input type="tel" id="phone" name="phone" required placeholder="+7 (XXX) XXX-XX-XX">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Сообщение</label>
+                            <textarea id="message" name="message" placeholder="Опишите ваш вопрос или задачу"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Прикрепить файл</label>
+                            <div class="file-upload">
+                                <input type="file" id="file" name="file">
+                                <label for="file" class="file-upload-label">
+                                    <i class="fas fa-paperclip"></i> Выберите файл (до 10 МБ)
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">ОСТАВИТЬ ЗАЯВКУ</button>
+                    </form>
+                </div>
+                <div class="contact-info">
+                    <h3>Контакты</h3>
+                    <div class="contact-details">
+                        <div class="contact-detail">
+                            <i class="fas fa-phone-alt"></i>
+                            <div>
+                                <strong>+7 (333) 335-33-33</strong><br>
+                                <small>Телефон для связи</small>
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong>Москва</strong><br>
+                                Центральная набережная 6, стр 2
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <strong>info@company.ru</strong><br>
+                                <small>Электронная почта</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="working-hours">
+                        <h4>Режим работы:</h4>
+                        <p>Пн-Пт 9:00-19:00 (МСК)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>ТаможСервис</h3>
+                    <p>Профессиональное таможенное оформление грузов из Китая, Беларуси и России. Полное сопровождение "под ключ".</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Навигация</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="index.html#services">Услуги</a></li>
+                        <li><a href="calculator.html">Калькулятор ВЭД</a></li>
+                        <li><a href="index.html#directions">Направления</a></li>
+                        <li><a href="index.html#contacts">Контакты</a></li>
+                        <li><a href="index.html#about">О компании</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-phone-alt"></i> +7 (333) 335-33-33</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Москва, Павелецкая площадь, 3</li>
+                        <li><i class="fas fa-envelope"></i> info@company.ru</li>
+                        <li><i class="fas fa-clock"></i> Пн-Пт 9:00-19:00 (МСК)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 ТаможСервис. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ========== УПРАВЛЕНИЕ АВТОРИЗАЦИЕЙ ==========
+        
+        // Проверка авторизации пользователя
+        function checkAuth() {
+            const userData = localStorage.getItem('user') || sessionStorage.getItem('user');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    updateUserInterface(user);
+                } catch (e) {
+                    console.error('Ошибка при парсинге данных пользователя:', e);
+                    resetUserInterface();
+                }
+            } else {
+                resetUserInterface();
+            }
+        }
+
+        // Обновление интерфейса для авторизованного пользователя
+        function updateUserInterface(user) {
+            const userIcon = document.querySelector('.user-icon');
+            const userText = document.querySelector('.user-text');
+            const dropdownName = document.getElementById('dropdownUserName');
+            const dropdownEmail = document.getElementById('dropdownUserEmail');
+            
+            if (userIcon) {
+                userIcon.href = 'javascript:void(0)'; // предотвращаем переход на auth.html
+                userIcon.removeEventListener('click', toggleUserMenu);
+                userIcon.addEventListener('click', toggleUserMenu);
+            }
+            
+            if (userText) {
+                const firstName = user.name ? user.name.split(' ')[0] : 'Профиль';
+                userText.textContent = firstName;
+            }
+            
+            if (dropdownName) {
+                dropdownName.textContent = user.name || 'Пользователь';
+            }
+            if (dropdownEmail) {
+                dropdownEmail.textContent = user.email || 'email@example.com';
+            }
+            
+            // Добавляем пункт "Мои заявки" в навигацию
+            addRequestsMenuItem();
+        }
+
+        // Сброс интерфейса для неавторизованного пользователя
+        function resetUserInterface() {
+            const userIcon = document.querySelector('.user-icon');
+            const userText = document.querySelector('.user-text');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            if (userIcon) {
+                userIcon.href = 'auth.html';
+                userIcon.removeEventListener('click', toggleUserMenu);
+            }
+            
+            if (userText) {
+                userText.textContent = 'Войти';
+            }
+            
+            if (userDropdown) {
+                userDropdown.classList.remove('active');
+            }
+            
+            // Удаляем пункт "Мои заявки" из навигации
+            removeRequestsMenuItem();
+        }
+
+        // Переключение выпадающего меню
+        function toggleUserMenu(e) {
+            e.preventDefault();
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('active');
+            }
+        }
+
+        // Добавление пункта "Мои заявки" в навигацию
+        function addRequestsMenuItem() {
+            const mainMenu = document.getElementById('mainMenu');
+            if (!mainMenu) return;
+            
+            const existingItem = Array.from(mainMenu.children).find(
+                li => li.querySelector('a')?.getAttribute('href') === 'application.html'
+            );
+            
+            if (!existingItem) {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = 'application.html';
+                a.textContent = 'Мои заявки';
+                li.appendChild(a);
+                
+                const calculatorItem = Array.from(mainMenu.children).find(
+                    li => li.querySelector('a')?.getAttribute('href') === 'calculator.html'
+                );
+                
+                if (calculatorItem) {
+                    calculatorItem.insertAdjacentElement('afterend', li);
+                } else {
+                    mainMenu.appendChild(li);
+                }
+            }
+        }
+
+        // Удаление пункта "Мои заявки" из навигации
+        function removeRequestsMenuItem() {
+            const mainMenu = document.getElementById('mainMenu');
+            if (!mainMenu) return;
+            
+            const requestsItem = Array.from(mainMenu.children).find(
+                li => li.querySelector('a')?.getAttribute('href') === 'application.html'
+            );
+            
+            if (requestsItem) {
+                requestsItem.remove();
+            }
+        }
+
+        // Закрытие выпадающего меню при клике вне его
+        function handleClickOutside(e) {
+            const userMenu = document.getElementById('userMenuContainer');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (userMenu && dropdown && !userMenu.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        }
+
+        // Выход из системы
+        function logout() {
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
+            resetUserInterface();
+            
+            // Показываем уведомление
+            showNotification('Вы успешно вышли из системы');
+            
+            // Если нужно, перенаправляем на главную
+            // window.location.href = 'index.html';
+        }
+
+        // Показ уведомления
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #27ae60;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // ========== ОСНОВНАЯ ФУНКЦИОНАЛЬНОСТЬ СТРАНИЦЫ ==========
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mainMenu = document.getElementById('mainMenu');
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mainMenu.classList.toggle('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                if (mainMenu.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        }
+        
+        // Contact form submission с проверкой авторизации
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const userData = localStorage.getItem('user') || sessionStorage.getItem('user');
+                
+                if (userData) {
+                    alert('Спасибо! Ваша заявка отправлена. Мы свяжемся с вами в ближайшее время.');
+                    contactForm.reset();
+                } else {
+                    if (confirm('Для отправки заявки необходимо авторизоваться. Перейти на страницу входа?')) {
+                        window.location.href = 'auth.html';
+                    }
+                }
+            });
+        }
+        
+        // Smooth scroll for anchor links (на этой странице)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (mainMenu && mainMenu.classList.contains('active')) {
+                        mainMenu.classList.remove('active');
+                        const icon = mobileMenuBtn?.querySelector('i');
+                        if (icon) {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    }
+                }
+            });
+        });
+        
+        // ========== TN VED CODE GENERATOR (без изменений) ==========
+        const tnvedPreviewContainer = document.getElementById('tnvedPreviewContainer');
+        const tnvedCodePreview = document.getElementById('tnvedCodePreview');
+        const tnvedDescriptionPreview = document.getElementById('tnvedDescriptionPreview');
+        
+        const countryCodes = {
+            'china': 'CN',
+            'belarus': 'BY', 
+            'russia': 'RU',
+            'eu': 'EU',
+            'usa': 'US',
+            'other': 'OT'
+        };
+        
+        const productTypeCodes = {
+            'electronics': { section: '85', description: 'Электрические машины и оборудование' },
+            'clothes': { section: '61-62', description: 'Одежда и текстильные изделия' },
+            'auto': { section: '87', description: 'Транспортные средства и запчасти' },
+            'food': { section: '01-24', description: 'Продукты питания' },
+            'machinery': { section: '84', description: 'Машины и механическое оборудование' },
+            'chemicals': { section: '28-38', description: 'Химическая продукция' },
+            'furniture': { section: '94', description: 'Мебель' },
+            'other': { section: '99', description: 'Прочие товары' }
+        };
+        
+        const transportCodes = {
+            'auto': '01',
+            'rail': '02',
+            'air': '03',
+            'sea': '04'
+        };
+        
+        const regimeCodes = {
+            'import': 'ИМ',
+            'export': 'ЭК',
+            'transit': 'ТР'
+        };
+        
+        const dutyRatesMatrix = {
+            'china-electronics-import': 5,
+            'china-clothes-import': 10,
+            'china-auto-import': 15,
+            'china-food-import': 20,
+            'china-machinery-import': 7,
+            'china-chemicals-import': 12,
+            'china-furniture-import': 8,
+            'china-other-import': 15,
+            'belarus-electronics-import': 0,
+            'belarus-clothes-import': 0,
+            'belarus-auto-import': 0,
+            'belarus-food-import': 0,
+            'belarus-machinery-import': 0,
+            'belarus-chemicals-import': 0,
+            'belarus-furniture-import': 0,
+            'belarus-other-import': 0,
+            'russia-electronics-import': 5,
+            'russia-clothes-import': 10,
+            'russia-auto-import': 15,
+            'russia-food-import': 15,
+            'russia-machinery-import': 7,
+            'russia-chemicals-import': 10,
+            'russia-furniture-import': 8,
+            'russia-other-import': 12,
+            'eu-electronics-import': 8,
+            'eu-clothes-import': 12,
+            'eu-auto-import': 18,
+            'eu-food-import': 22,
+            'eu-machinery-import': 9,
+            'eu-chemicals-import': 14,
+            'eu-furniture-import': 10,
+            'eu-other-import': 16,
+            'usa-electronics-import': 7,
+            'usa-clothes-import': 11,
+            'usa-auto-import': 17,
+            'usa-food-import': 21,
+            'usa-machinery-import': 8,
+            'usa-chemicals-import': 13,
+            'usa-furniture-import': 9,
+            'usa-other-import': 15,
+            'other-electronics-import': 10,
+            'other-clothes-import': 15,
+            'other-auto-import': 20,
+            'other-food-import': 25,
+            'other-machinery-import': 12,
+            'other-chemicals-import': 17,
+            'other-furniture-import': 13,
+            'other-other-import': 18,
+            'china-electronics-export': 0,
+            'china-clothes-export': 0,
+            'china-auto-export': 0,
+            'china-food-export': 0,
+            'china-machinery-export': 0,
+            'china-chemicals-export': 0,
+            'china-furniture-export': 0,
+            'china-other-export': 0,
+            'default-transit': 0
+        };
+        
+        function generateTnvedCode(country, productType, transportType, customsRegime) {
+            const countryCode = countryCodes[country] || 'OT';
+            const productInfo = productTypeCodes[productType] || productTypeCodes.other;
+            const transportCode = transportCodes[transportType] || '00';
+            const regimeCode = regimeCodes[customsRegime] || 'ИМ';
+            
+            let hash = 0;
+            const inputString = country + productType + transportType + customsRegime;
+            for (let i = 0; i < inputString.length; i++) {
+                hash = ((hash << 5) - hash) + inputString.charCodeAt(i);
+                hash = hash & hash;
+            }
+            
+            const sectionCode = productInfo.section.replace('-', '');
+            const groupCode = Math.abs(hash % 99).toString().padStart(2, '0');
+            const subgroupCode = Math.abs((hash * 7) % 999).toString().padStart(3, '0');
+            const positionCode = Math.abs((hash * 13) % 10);
+            
+            return `${sectionCode.padStart(4, '0')} ${groupCode} ${subgroupCode} ${positionCode}`;
+        }
+        
+        function getDutyRate(country, productType, customsRegime) {
+            const key = `${country}-${productType}-${customsRegime}`;
+            if (dutyRatesMatrix[key]) {
+                return dutyRatesMatrix[key];
+            }
+            if (customsRegime === 'export' || customsRegime === 'transit') {
+                return 0;
+            }
+            const defaultRates = {
+                'electronics': 5,
+                'clothes': 10,
+                'auto': 15,
+                'food': 20,
+                'machinery': 7,
+                'chemicals': 12,
+                'furniture': 8,
+                'other': 15
+            };
+            return defaultRates[productType] || 15;
+        }
+        
+        function updateTnvedPreview() {
+            const country = document.getElementById('country').value;
+            const productType = document.getElementById('productType').value;
+            const transportType = document.getElementById('transportType').value;
+            const customsRegime = document.getElementById('customsRegime').value;
+            
+            if (country && productType && transportType && customsRegime) {
+                const tnvedCode = generateTnvedCode(country, productType, transportType, customsRegime);
+                tnvedCodePreview.textContent = tnvedCode;
+                const productInfo = productTypeCodes[productType] || productTypeCodes.other;
+                tnvedDescriptionPreview.textContent = `${productInfo.description}. Страна: ${document.getElementById('country').selectedOptions[0].text}, Режим: ${document.getElementById('customsRegime').selectedOptions[0].text}`;
+                tnvedPreviewContainer.style.display = 'block';
+            } else {
+                tnvedPreviewContainer.style.display = 'none';
+            }
+        }
+        
+        document.getElementById('country').addEventListener('change', updateTnvedPreview);
+        document.getElementById('productType').addEventListener('change', updateTnvedPreview);
+        document.getElementById('transportType').addEventListener('change', updateTnvedPreview);
+        document.getElementById('customsRegime').addEventListener('change', updateTnvedPreview);
+        
+        // Calculator calculation
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const vedCalculator = document.getElementById('vedCalculator');
+        const calcResults = document.getElementById('calcResults');
+        
+        const vatRate = 20;
+        const transportCosts = {
+            auto: 0.5,
+            rail: 0.3,
+            air: 2.5,
+            sea: 0.2
+        };
+        const serviceFeeRate = 3;
+        const additionalServicesCosts = {
+            insurance: 150,
+            storage: 100,
+            certification: 300,
+            consultation: 200
+        };
+        const urgencyMultipliers = {
+            standard: 1,
+            express: 1.5,
+            urgent: 2
+        };
+        
+        calculateBtn.addEventListener('click', function() {
+            const country = document.getElementById('country').value;
+            const productType = document.getElementById('productType').value;
+            const customsValue = parseFloat(document.getElementById('customsValue').value) || 0;
+            const weight = parseFloat(document.getElementById('weight').value) || 0;
+            const transportType = document.getElementById('transportType').value;
+            const customsRegime = document.getElementById('customsRegime').value;
+            const urgency = document.getElementById('urgency').value;
+            
+            if (!country || !customsValue || !weight || !productType || !transportType || !customsRegime) {
+                alert('Пожалуйста, заполните все обязательные поля');
+                return;
+            }
+            
+            const tnvedCode = generateTnvedCode(country, productType, transportType, customsRegime);
+            const dutyRate = getDutyRate(country, productType, customsRegime);
+            const productInfo = productTypeCodes[productType] || productTypeCodes.other;
+            
+            let customsDuty = 0;
+            if (customsRegime === 'import') {
+                customsDuty = (customsValue * dutyRate) / 100;
+            }
+            
+            let vat = 0;
+            if (customsRegime === 'import') {
+                vat = ((customsValue + customsDuty) * vatRate) / 100;
+            }
+            
+            const customsFees = 100 + (customsValue * 0.005);
+            const transportRate = transportCosts[transportType] || transportCosts.auto;
+            const transportCost = weight * transportRate;
+            const serviceFee = (customsValue * serviceFeeRate) / 100;
+            
+            let additionalCost = 0;
+            const additionalCheckboxes = document.querySelectorAll('input[name="additionalServices"]:checked');
+            additionalCheckboxes.forEach(checkbox => {
+                additionalCost += additionalServicesCosts[checkbox.value] || 0;
+            });
+            
+            const urgencyMultiplier = urgencyMultipliers[urgency] || 1;
+            const adjustedServiceFee = serviceFee * urgencyMultiplier;
+            
+            const totalCost = customsDuty + vat + customsFees + transportCost + adjustedServiceFee + additionalCost;
+            
+            let timeline;
+            switch(urgency) {
+                case 'express': timeline = '2-3 дня'; break;
+                case 'urgent': timeline = '24 часа'; break;
+                default: timeline = '5-7 дней';
+            }
+            
+            document.getElementById('resultTnvedCode').textContent = tnvedCode;
+            document.getElementById('resultTnvedBasis').textContent = 
+                `Страна: ${document.getElementById('country').selectedOptions[0].text}, ` +
+                `Тип товара: ${document.getElementById('productType').selectedOptions[0].text}, ` +
+                `Режим: ${document.getElementById('customsRegime').selectedOptions[0].text}`;
+            document.getElementById('resultDutyRate').textContent = dutyRate + "%";
+            document.getElementById('customsDuty').textContent = customsDuty.toFixed(2) + ' USD';
+            document.getElementById('vat').textContent = vat.toFixed(2) + ' USD';
+            document.getElementById('customsFees').textContent = customsFees.toFixed(2) + ' USD';
+            document.getElementById('transportCost').textContent = transportCost.toFixed(2) + ' USD';
+            document.getElementById('serviceFee').textContent = adjustedServiceFee.toFixed(2) + ' USD';
+            document.getElementById('additionalCost').textContent = additionalCost.toFixed(2) + ' USD';
+            document.getElementById('totalCost').textContent = totalCost.toFixed(2) + ' USD';
+            document.getElementById('timeline').textContent = timeline;
+            
+            calcResults.style.display = 'block';
+            calcResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+        
+        resetBtn.addEventListener('click', function() {
+            vedCalculator.reset();
+            tnvedPreviewContainer.style.display = 'none';
+            calcResults.style.display = 'none';
+        });
+        
+        // Format phone number input
+        const phoneInput = document.getElementById('phone');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 0) {
+                    value = '+7 (' + value.substring(1, 4) + ') ' + value.substring(4, 7) + '-' + value.substring(7, 9) + '-' + value.substring(9, 11);
+                }
+                e.target.value = value.substring(0, 18);
+            });
+        }
+
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            
+            // Обработчик для кнопки выхода
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+            
+            // Закрытие выпадающего меню при клике вне
+            document.addEventListener('click', handleClickOutside);
+            
+            // Добавляем стили для анимаций, если их ещё нет
+            if (!document.getElementById('dynamic-styles')) {
+                const style = document.createElement('style');
+                style.id = 'dynamic-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from {
+                            transform: translateX(100%);
+                            opacity: 0;
+                        }
+                        to {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                    }
+                    @keyframes slideOut {
+                        from {
+                            transform: translateX(0);
+                            opacity: 1;
+                        }
+                        to {
+                            transform: translateX(100%);
+                            opacity: 0;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+</body>
+</html>

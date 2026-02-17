@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация | ТаможСервис</title>
+    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Дополнительные стили для вкладок профиля */
+          .header-actions {
+            position: relative;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+        
+        .user-icon:hover {
+            background-color: #d0ecff;
+            transform: translateY(-2px);
+        }
+        
+        .user-icon i {
+            font-size: 20px;
+        }
+        
+        .user-text {
+    font-size: 15px;
+    font-weight: 500;
+}
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 250px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-top: 10px;
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .user-dropdown.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .user-dropdown-header {
+            padding: 15px;
+            background: linear-gradient(135deg, #2c3e50, #2980b9);
+            color: white;
+        }
+        
+        .user-dropdown-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .user-dropdown-email {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .user-dropdown-item {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .user-dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: #2980b9;
+        }
+        
+        .user-dropdown-item i {
+            width: 20px;
+            color: #2980b9;
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background-color: #eee;
+            margin: 5px 0;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 10px;
+            background-color: #e8f4fd;
+            color: #2980b9;
+        }
+        .role-badge.admin {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .user-info-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .requester-info {
+            font-size: 0.9rem;
+            background-color: #f0f7ff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .requester-info i {
+            color: #2980b9;
+        }
+        .admin-actions {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed #ccc;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .status-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .admin-only {
+            display: none;
+        }
+        body.admin-mode .admin-only {
+            display: block;
+        }
+        .profile-tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+        
+        .profile-tab {
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .profile-tab:hover {
+            color: #2980b9;
+            background-color: #f8f9fa;
+        }
+        
+        .profile-tab.active {
+            color: #2980b9;
+            background-color: #e8f4fd;
+        }
+        
+        .profile-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #2980b9;
+        }
+        
+        .profile-section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .profile-section.active {
+            display: block;
+        }
+        
+        .password-strength {
+            margin-top: 5px;
+            height: 4px;
+            background-color: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .password-strength-text {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: #666;
+        }
+        
+        .security-note {
+            background-color: #fff3e0;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+        
+        .security-note i {
+            color: #f39c12;
+            margin-right: 10px;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 15px;
+            background-color: #e8f5e9;
+            color: #27ae60;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+        
+        .verification-badge i {
+            font-size: 14px;
+        }
+        
+        .email-unverified {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+        
+        .current-password-warning {
+            background-color: #fef9e7;
+            border: 1px solid #f1c40f;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #7d6608;
+        }
+
+        /* Стили для выпадающего меню */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdown-toggle i {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.dropdown:hover .dropdown-toggle i {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 200px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    border: 1px solid rgba(0, 40, 104, 0.08);
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(5px);
+}
+
+.dropdown-menu li {
+    list-style: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    float: none;
+    clear: both;
+}
+
+.dropdown-menu a {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #333;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    white-space: nowrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.dropdown-menu a i {
+    width: 18px;
+    color: #002868;
+    font-size: 14px;
+    text-align: center;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(0, 40, 104, 0.05);
+    color: #002868;
+}
+
+/* Дополнительные стили для активного состояния */
+.dropdown-menu a.active {
+    background: #002868;
+    color: white;
+}
+
+.dropdown-menu a.active i {
+    color: white;
+}
+
+/* Стили для разделителя в меню */
+.dropdown-divider {
+    height: 1px;
+    background: rgba(0, 40, 104, 0.08);
+    margin: 8px 0;
+}
+
+/* Важно! Переопределяем возможные глобальные стили */
+.dropdown-menu li,
+.dropdown-menu li * {
+    display: block;
+}
+
+.dropdown-menu ul,
+.dropdown-menu li,
+.dropdown-menu a {
+    float: none;
+}
+
+.dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu li {
+    display: list-item;
+}
+
+/* Выравнивание иконок и текста */
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 24px;
+}
+
+.dropdown-menu a i {
+    width: 18px;
+    font-size: 15px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Увеличиваем размер окна */
+.dropdown-menu {
+    min-width: 220px;
+    padding: 12px 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #002868;
+}
+
+.logo svg,
+.logo img {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container header-container">
+           <div class="logo">
+            <img src="logo_icon.svg" alt="ТаможСервис" width="32" height="32">
+            Тамож<span>Сервис</span>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul id="mainMenu">
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="index.html#services">Услуги</a></li>
+                    <li><a href="calculator.html">Калькулятор ВЭД</a></li>
+                    <li><a href="index.html#directions">Направления</a></li>
+                    <li><a href="application.html">Мои заявки</a></li>
+                    <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">О нас <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="about.html"><i class="fas fa-building"></i> О компании</a></li>
+                        <li><a href="#contacts"><i class="fas fa-map-marker-alt"></i> Контакты</a></li>
+                    </ul>
+                </li>
+                </ul>
+            </nav>
+            <div class="header-actions user-menu" id="userMenuContainer">
+                <a href="auth.html" class="user-icon" id="userIcon">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="user-text">Войти</span>
+                </a>
+                <!-- Выпадающее меню пользователя -->
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-header">
+                        <div class="user-dropdown-name" id="dropdownUserName">Пользователь</div>
+                        <div class="user-dropdown-email" id="dropdownUserEmail">email@example.com</div>
+                        <div class="user-dropdown-role" id="dropdownUserRole"></div>
+                    </div>
+                    <a href="auth.html" class="user-dropdown-item">
+                        <i class="fas fa-user"></i> Мой профиль
+                    </a>
+                    <a href="application.html" class="user-dropdown-item">
+                        <i class="fas fa-clipboard-list"></i> Мои заявки
+                    </a>
+                    <a href="calculator.html" class="user-dropdown-item">
+                        <i class="fas fa-calculator"></i> Калькулятор
+                    </a>
+                    <div class="user-dropdown-divider"></div>
+                    <a href="#" class="user-dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Выйти
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Auth Container -->
+    <section class="auth-container">
+        <div class="auth-card" id="authCard">
+            <!-- Профиль пользователя (показывается после авторизации) -->
+            <div class="auth-content" id="userProfile" style="display: none;">
+                <div class="user-profile">
+                    <div class="profile-header">
+                        <div class="avatar-container">
+                            <img id="profileAvatar" class="user-avatar" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="Avatar">
+                            <button class="avatar-upload-btn" onclick="document.getElementById('avatarUpload').click();">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                            <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="profile-info">
+                            <h2 class="user-name" id="userName">Иван Иванов</h2>
+                            <p class="user-email" id="userEmail">ivan@example.com</p>
+                            <span class="user-badge" id="userRoleBadge">
+                                <i class="fas fa-check-circle"></i> Подтвержденный аккаунт
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Вкладки профиля -->
+                    <div class="profile-tabs">
+                        <button class="profile-tab active" data-section="personal">Личные данные</button>
+                        <button class="profile-tab" data-section="security">Безопасность</button>
+                        <button class="profile-tab" data-section="notifications">Уведомления</button>
+                    </div>
+                    
+                    <!-- Секция: Личные данные -->
+                    <div id="section-personal" class="profile-section active">
+                        <div class="profile-details">
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i class="fas fa-cake-candles"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Возраст</div>
+                                    <div class="detail-value" id="userAge">28 лет</div>
+                                    <div style="font-size: 0.9rem; color: #666;" id="userBirthday">15.03.1995</div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Телефон</div>
+                                    <div class="detail-value" id="userPhone">+7 (999) 123-45-67</div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Страна</div>
+                                    <div class="detail-value" id="userCountry">Россия</div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i class="fas fa-city"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Город</div>
+                                    <div class="detail-value" id="userCity">Москва</div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i class="fas fa-location-dot"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Улица, дом</div>
+                                    <div class="detail-value" id="userAddress">ул. Центральная, д. 6, стр. 2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Секция: Безопасность -->
+                    <div id="section-security" class="profile-section">
+                        <div class="security-note">
+                            <i class="fas fa-shield-alt"></i>
+                            <strong>Безопасность аккаунта</strong> — регулярно меняйте пароль и не сообщайте его третьим лицам.
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 25px;">
+                            <!-- Смена Email -->
+                            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 12px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                    <h3 style="font-size: 1.1rem; color: #2c3e50; display: flex; align-items: center; gap: 10px;">
+                                        <i class="fas fa-envelope" style="color: #2980b9;"></i>
+                                        Электронная почта
+                                    </h3>
+                                    <span id="emailVerificationStatus" class="verification-badge">
+                                        <i class="fas fa-check-circle"></i> Подтверждена
+                                    </span>
+                                </div>
+                                <div style="display: flex; gap: 15px; align-items: flex-end;">
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 5px;">Текущий email</div>
+                                        <div style="font-weight: 600; color: #2c3e50; padding: 10px 0;" id="currentEmailDisplay">user@example.com</div>
+                                    </div>
+                                    <button class="profile-btn primary" onclick="openChangeEmailModal()">
+                                        <i class="fas fa-edit"></i> Изменить email
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Смена Пароля -->
+                            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 12px;">
+                                <h3 style="font-size: 1.1rem; color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-lock" style="color: #2980b9;"></i>
+                                    Пароль
+                                </h3>
+                                <div style="display: flex; gap: 15px; align-items: center;">
+                                    <div style="flex: 1;">
+                                        <div style="color: #666; margin-bottom: 5px;">••••••••</div>
+                                        <small style="color: #27ae60;">Последнее изменение: сегодня</small>
+                                    </div>
+                                    <button class="profile-btn primary" onclick="openChangePasswordModal()">
+                                        <i class="fas fa-key"></i> Сменить пароль
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Смена Логина (Имени пользователя) -->
+                            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 12px;">
+                                <h3 style="font-size: 1.1rem; color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-user" style="color: #2980b9;"></i>
+                                    Имя пользователя
+                                </h3>
+                                <div style="display: flex; gap: 15px; align-items: center;">
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; color: #2c3e50; padding: 10px 0;" id="currentUsernameDisplay">Иван Иванов</div>
+                                    </div>
+                                    <button class="profile-btn primary" onclick="openChangeUsernameModal()">
+                                        <i class="fas fa-edit"></i> Изменить имя
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Двухфакторная аутентификация -->
+                            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 12px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h3 style="font-size: 1.1rem; color: #2c3e50; margin-bottom: 5px; display: flex; align-items: center; gap: 10px;">
+                                            <i class="fas fa-mobile-alt" style="color: #2980b9;"></i>
+                                            Двухфакторная аутентификация
+                                        </h3>
+                                        <p style="color: #666; font-size: 0.9rem;">Повысьте безопасность вашего аккаунта</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="twoFactorAuth">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Секция: Уведомления -->
+                    <div id="section-notifications" class="profile-section">
+                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 12px;">
+                            <h3 style="font-size: 1.1rem; color: #2c3e50; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-bell" style="color: #2980b9;"></i>
+                                Настройки уведомлений
+                            </h3>
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                    <input type="checkbox" id="notifyEmail" checked>
+                                    <span>Получать уведомления по email</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                    <input type="checkbox" id="notifySms">
+                                    <span>Получать уведомления по SMS</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                    <input type="checkbox" id="notifyStatus" checked>
+                                    <span>Уведомлять об изменении статуса заявок</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                                    <input type="checkbox" id="notifyNews">
+                                    <span>Новости и акции компании</span>
+                                </label>
+                            </div>
+                            <button class="auth-btn" style="margin-top: 25px;" onclick="saveNotificationSettings()">
+                                <i class="fas fa-save"></i> Сохранить настройки
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button class="profile-btn primary" id="editProfileBtn">
+                            <i class="fas fa-edit"></i> Редактировать профиль
+                        </button>
+                        <button class="profile-btn secondary" onclick="window.location.href='calculator.html'">
+                            <i class="fas fa-calculator"></i> Калькулятор
+                        </button>
+                        <button class="profile-btn secondary" onclick="window.location.href='application.html'">
+                            <i class="fas fa-file-contract"></i> Мои заявки
+                        </button>
+                        <button class="profile-btn logout" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Выйти
+                        </button>
+                    </div>
+                    <a href="index.html" class="auth-back">
+                        <i class="fas fa-arrow-left"></i> Вернуться на главную
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Формы авторизации/регистрации -->
+            <div class="auth-content" id="authForms">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Вход</button>
+                    <button class="auth-tab" data-tab="register">Регистрация</button>
+                </div>
+                
+                <div class="auth-forms-container">
+                    <!-- Форма входа -->
+                    <form id="loginForm" class="auth-form active">
+                        <h2 class="auth-title">Вход в личный кабинет</h2>
+                        
+                        <div id="loginError" class="auth-error">
+                            Неправильный email или пароль
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" name="email" required placeholder="Введите ваш email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="loginPassword">Пароль</label>
+                            <div class="password-input">
+                                <input type="password" id="loginPassword" name="password" required placeholder="Введите пароль">
+                                <button type="button" class="password-toggle" data-target="loginPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="remember"> Запомнить меня
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="auth-btn">
+                            <i class="fas fa-sign-in-alt"></i> ВОЙТИ
+                        </button>
+                        
+                        <div class="auth-divider">
+                            <span>Или войдите через</span>
+                        </div>
+                        
+                        <div class="social-auth">
+                            <button type="button" class="social-btn google">
+                                <i class="fab fa-google"></i> Google
+                            </button>
+                            <button type="button" class="social-btn vk">
+                                <i class="fab fa-vk"></i> ВКонтакте
+                            </button>
+                        </div>
+                        
+                        <div class="auth-links">
+                            <a href="#" id="forgotPassword">Забыли пароль?</a> | 
+                            <a href="#" id="switchToRegister">Нет аккаунта? Зарегистрируйтесь</a>
+                        </div>
+                    </form>
+                    
+                    <!-- Форма регистрации -->
+                    <form id="registerForm" class="auth-form">
+                        <h2 class="auth-title">Регистрация</h2>
+                        
+                        <div id="registerError" class="auth-error">
+                            Ошибка регистрации. Попробуйте еще раз.
+                        </div>
+                        
+                        <div id="registerSuccess" class="auth-success">
+                            Регистрация успешна! Теперь вы можете войти.
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="registerName">Имя</label>
+                            <input type="text" id="registerName" name="name" required placeholder="Введите ваше имя">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="registerEmail">Email</label>
+                            <input type="email" id="registerEmail" name="email" required placeholder="Введите ваш email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="registerPhone">Телефон</label>
+                            <input type="tel" id="registerPhone" name="phone" required placeholder="+7 (XXX) XXX-XX-XX">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="registerPassword">Пароль</label>
+                            <div class="password-input">
+                                <input type="password" id="registerPassword" name="password" required placeholder="Придумайте пароль">
+                                <button type="button" class="password-toggle" data-target="registerPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength" id="registerPasswordStrength">
+                                <div class="password-strength-bar" id="registerPasswordStrengthBar"></div>
+                            </div>
+                            <span class="password-strength-text" id="registerPasswordStrengthText">Введите пароль</span>
+                            <small style="color: #666; margin-top: 5px; display: block;">Минимум 8 символов</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="registerConfirmPassword">Подтвердите пароль</label>
+                            <div class="password-input">
+                                <input type="password" id="registerConfirmPassword" name="confirmPassword" required placeholder="Повторите пароль">
+                                <button type="button" class="password-toggle" data-target="registerConfirmPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Дата рождения</label>
+                            <input type="date" id="registerBirthdate" name="birthdate">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Страна</label>
+                            <select id="registerCountry" name="country">
+                                <option value="Россия">Россия</option>
+                                <option value="Беларусь">Беларусь</option>
+                                <option value="Казахстан">Казахстан</option>
+                                <option value="Китай">Китай</option>
+                            </select>
+                        </div>
+                        
+                        <div class="location-fields">
+                            <div class="form-group">
+                                <label>Город</label>
+                                <input type="text" id="registerCity" placeholder="Город">
+                            </div>
+                            <div class="form-group">
+                                <label>Улица</label>
+                                <input type="text" id="registerStreet" placeholder="Улица">
+                            </div>
+                            <div class="form-group">
+                                <label>Дом</label>
+                                <input type="text" id="registerHouse" placeholder="№ дома">
+                            </div>
+                            <div class="form-group">
+                                <label>Квартира/офис</label>
+                                <input type="text" id="registerApartment" placeholder="Кв./офис">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group terms-checkbox">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">
+                                Я согласен с <a href="#">условиями использования</a> и <a href="#">политикой конфиденциальности</a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="auth-btn">
+                            <i class="fas fa-user-plus"></i> ЗАРЕГИСТРИРОВАТЬСЯ
+                        </button>
+                        
+                        <div class="auth-links">
+                            <a href="#" id="switchToLogin">Уже есть аккаунт? Войдите</a>
+                        </div>
+                    </form>
+                    
+                    <!-- Форма восстановления пароля -->
+                    <form id="forgotPasswordForm" class="auth-form">
+                        <h2 class="auth-title">Восстановление пароля</h2>
+                        
+                        <div id="forgotError" class="auth-error">
+                            Email не найден
+                        </div>
+                        
+                        <div id="forgotSuccess" class="auth-success">
+                            Инструкции по восстановлению отправлены на ваш email
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="forgotEmail">Email</label>
+                            <input type="email" id="forgotEmail" name="email" required placeholder="Введите ваш email">
+                        </div>
+                        
+                        <button type="submit" class="auth-btn">
+                            <i class="fas fa-key"></i> ВОССТАНОВИТЬ ПАРОЛЬ
+                        </button>
+                        
+                        <div class="auth-links">
+                            <a href="#" id="backToLogin">Вернуться ко входу</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Модальное окно редактирования профиля (Личные данные) -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModalBtn">&times;</button>
+            <h2 class="modal-title">Редактировать профиль</h2>
+            
+            <div class="avatar-preview">
+                <img id="editAvatarPreview" class="preview-image" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y" alt="Avatar preview">
+            </div>
+            
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label>Имя</label>
+                    <input type="text" id="editName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="editEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Телефон</label>
+                    <input type="tel" id="editPhone">
+                </div>
+                
+                <div class="age-birthday">
+                    <div class="form-group">
+                        <label>Возраст</label>
+                        <input type="number" id="editAge" min="1" max="120" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Дата рождения</label>
+                        <input type="date" id="editBirthdate">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Страна</label>
+                    <select id="editCountry">
+                        <option value="Россия">Россия</option>
+                        <option value="Беларусь">Беларусь</option>
+                        <option value="Казахстан">Казахстан</option>
+                        <option value="Китай">Китай</option>
+                    </select>
+                </div>
+                
+                <div class="location-fields">
+                    <div class="form-group">
+                        <label>Город</label>
+                        <input type="text" id="editCity">
+                    </div>
+                    <div class="form-group">
+                        <label>Улица</label>
+                        <input type="text" id="editStreet">
+                    </div>
+                    <div class="form-group">
+                        <label>Дом</label>
+                        <input type="text" id="editHouse">
+                    </div>
+                    <div class="form-group">
+                        <label>Квартира/офис</label>
+                        <input type="text" id="editApartment">
+                    </div>
+                </div>
+                
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-save"></i> Сохранить изменения
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно смены email -->
+    <div id="changeEmailModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeChangeEmailModal()">&times;</button>
+            <h2 class="modal-title">Изменить email</h2>
+            
+            <form id="changeEmailForm">
+                <div class="current-password-warning">
+                    <i class="fas fa-info-circle"></i>
+                    Для смены email необходимо подтвердить текущий пароль
+                </div>
+                
+                <div class="form-group">
+                    <label for="currentEmailPassword">Текущий пароль</label>
+                    <div class="password-input">
+                        <input type="password" id="currentEmailPassword" name="currentPassword" required placeholder="Введите текущий пароль">
+                        <button type="button" class="password-toggle" data-target="currentEmailPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newEmail">Новый email</label>
+                    <input type="email" id="newEmail" name="newEmail" required placeholder="Введите новый email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmNewEmail">Подтвердите новый email</label>
+                    <input type="email" id="confirmNewEmail" name="confirmNewEmail" required placeholder="Повторите новый email">
+                </div>
+                
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-save"></i> Сохранить email
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно смены пароля -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeChangePasswordModal()">&times;</button>
+            <h2 class="modal-title">Сменить пароль</h2>
+            
+            <form id="changePasswordForm">
+                <div class="security-note">
+                    <i class="fas fa-shield-alt"></i>
+                    Пароль должен содержать минимум 8 символов, включать буквы разного регистра и цифры
+                </div>
+                
+                <div class="form-group">
+                    <label for="currentPassword">Текущий пароль</label>
+                    <div class="password-input">
+                        <input type="password" id="currentPassword" name="currentPassword" required placeholder="Введите текущий пароль">
+                        <button type="button" class="password-toggle" data-target="currentPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="newPassword">Новый пароль</label>
+                    <div class="password-input">
+                        <input type="password" id="newPassword" name="newPassword" required placeholder="Придумайте новый пароль">
+                        <button type="button" class="password-toggle" data-target="newPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                    </div>
+                    <span class="password-strength-text" id="passwordStrengthText">Введите новый пароль</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmNewPassword">Подтвердите новый пароль</label>
+                    <div class="password-input">
+                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" required placeholder="Повторите новый пароль">
+                        <button type="button" class="password-toggle" data-target="confirmNewPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-key"></i> Сменить пароль
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно смены имени пользователя -->
+    <div id="changeUsernameModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeChangeUsernameModal()">&times;</button>
+            <h2 class="modal-title">Изменить имя</h2>
+            
+            <form id="changeUsernameForm">
+                <div class="form-group">
+                    <label for="newUsername">Новое имя</label>
+                    <input type="text" id="newUsername" name="newUsername" required placeholder="Введите новое имя">
+                </div>
+                
+                <div class="form-group">
+                    <label for="usernamePassword">Подтвердите пароль</label>
+                    <div class="password-input">
+                        <input type="password" id="usernamePassword" name="password" required placeholder="Введите пароль">
+                        <button type="button" class="password-toggle" data-target="usernamePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-save"></i> Сохранить имя
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>ТаможСервис</h3>
+                    <p>Профессиональное таможенное оформление грузов из Китая, Беларуси и России. Полное сопровождение "под ключ".</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Навигация</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="index.html#services">Услуги</a></li>
+                        <li><a href="calculator.html">Калькулятор ВЭД</a></li>
+                        <li><a href="index.html#directions">Направления</a></li>
+                        <li><a href="index.html#contacts">Контакты</a></li>
+                        <li><a href="about.html">О компании</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-phone-alt"></i> +7 (333) 335-33-33</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Москва, Центральная набережная 6, стр 2</li>
+                        <li><i class="fas fa-envelope"></i> info@company.ru</li>
+                        <li><i class="fas fa-clock"></i> Пн-Пт 9:00-19:00 (МСК)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 ТаможСервис. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
+        let currentUser = null;
+        
+        // Хранилище пользователей (в реальном приложении - база данных)
+        let usersDatabase = [];
+
+        // ========== ИНИЦИАЛИЗАЦИЯ ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загружаем базу пользователей
+            loadUsersDatabase();
+            
+            // Проверяем авторизацию
+            checkAuth();
+            
+            // Инициализируем переключение вкладок профиля
+            initProfileTabs();
+            
+            // Инициализируем индикатор сложности пароля
+            initPasswordStrength();
+            
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mainMenu = document.getElementById('mainMenu');
+            
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mainMenu.classList.toggle('active');
+                    const icon = mobileMenuBtn.querySelector('i');
+                    if (mainMenu.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+            
+            // Настройка выпадающего меню пользователя
+            setupUserMenu();
+        });
+
+        // ========== ЗАГРУЗКА БАЗЫ ПОЛЬЗОВАТЕЛЕЙ ==========
+        function loadUsersDatabase() {
+            const savedUsers = localStorage.getItem('users');
+            if (savedUsers) {
+                usersDatabase = JSON.parse(savedUsers);
+            } else {
+                // Создаем тестовых пользователей
+                usersDatabase = [
+                    { 
+                        id: 'admin1',
+                        email: 'admin@example.com', 
+                        password: '12345678', 
+                        name: 'Администратор',
+                        role: 'admin',
+                        birthdate: '1985-05-15',
+                        country: 'Россия',
+                        city: 'Москва',
+                        street: 'ул. Центральная',
+                        house: '6',
+                        apartment: '2',
+                        phone: '+7 (999) 123-45-67',
+                        avatar: null,
+                        emailVerified: true,
+                        notifications: {
+                            email: true,
+                            sms: false,
+                            status: true,
+                            news: false
+                        },
+                        twoFactorAuth: false
+                    },
+                    { 
+                        id: 'user1',
+                        email: 'user@example.com', 
+                        password: '12345678', 
+                        name: 'Иван Иванов',
+                        role: 'user',
+                        birthdate: '1995-03-15',
+                        country: 'Россия',
+                        city: 'Москва',
+                        street: 'ул. Центральная',
+                        house: '6',
+                        apartment: '2',
+                        phone: '+7 (999) 123-45-67',
+                        avatar: null,
+                        emailVerified: true,
+                        notifications: {
+                            email: true,
+                            sms: false,
+                            status: true,
+                            news: false
+                        },
+                        twoFactorAuth: false
+                    }
+                ];
+                localStorage.setItem('users', JSON.stringify(usersDatabase));
+            }
+        }
+
+        // ========== СОХРАНЕНИЕ БАЗЫ ПОЛЬЗОВАТЕЛЕЙ ==========
+        function saveUsersDatabase() {
+            localStorage.setItem('users', JSON.stringify(usersDatabase));
+        }
+
+        // ========== ПРОВЕРКА АВТОРИЗАЦИИ ==========
+        function checkAuth() {
+            const user = localStorage.getItem('user') || sessionStorage.getItem('user');
+            if (user) {
+                currentUser = JSON.parse(user);
+                // Находим полные данные пользователя в базе
+                const fullUser = usersDatabase.find(u => u.email === currentUser.email);
+                if (fullUser) {
+                    currentUser = { ...fullUser };
+                    // Не сохраняем пароль в currentUser
+                    delete currentUser.password;
+                }
+                showUserProfile(currentUser);
+            } else {
+                showAuthForms();
+            }
+        }
+
+        // ========== НАСТРОЙКА ВЫПАДАЮЩЕГО МЕНЮ ==========
+        function setupUserMenu() {
+            const userIcon = document.getElementById('userIcon');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (userIcon) {
+                userIcon.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    dropdown.classList.toggle('active');
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                if (!userIcon?.contains(e.target) && !dropdown?.contains(e.target)) {
+                    dropdown?.classList.remove('active');
+                }
+            });
+        }
+
+        // ========== ИНИЦИАЛИЗАЦИЯ ВКЛАДОК ПРОФИЛЯ ==========
+        function initProfileTabs() {
+            const tabs = document.querySelectorAll('.profile-tab');
+            const sections = document.querySelectorAll('.profile-section');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const sectionId = this.getAttribute('data-section');
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    sections.forEach(section => section.classList.remove('active'));
+                    document.getElementById(`section-${sectionId}`).classList.add('active');
+                });
+            });
+        }
+
+        // ========== ИНИЦИАЛИЗАЦИЯ ИНДИКАТОРА СЛОЖНОСТИ ПАРОЛЯ ==========
+        function initPasswordStrength() {
+            const passwordInput = document.getElementById('newPassword');
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const strengthText = document.getElementById('passwordStrengthText');
+            
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    const password = this.value;
+                    const strength = calculatePasswordStrength(password);
+                    
+                    strengthBar.style.width = strength.percent + '%';
+                    strengthBar.style.backgroundColor = strength.color;
+                    strengthText.textContent = strength.text;
+                    strengthText.style.color = strength.color;
+                });
+            }
+            
+            // Для формы регистрации
+            const registerPassword = document.getElementById('registerPassword');
+            const registerStrengthBar = document.getElementById('registerPasswordStrengthBar');
+            const registerStrengthText = document.getElementById('registerPasswordStrengthText');
+            
+            if (registerPassword) {
+                registerPassword.addEventListener('input', function() {
+                    const password = this.value;
+                    const strength = calculatePasswordStrength(password);
+                    
+                    registerStrengthBar.style.width = strength.percent + '%';
+                    registerStrengthBar.style.backgroundColor = strength.color;
+                    registerStrengthText.textContent = strength.text;
+                    registerStrengthText.style.color = strength.color;
+                });
+            }
+        }
+
+        // ========== РАСЧЕТ СЛОЖНОСТИ ПАРОЛЯ ==========
+        function calculatePasswordStrength(password) {
+            let strength = 0;
+            
+            if (password.length >= 8) strength += 25;
+            if (password.length >= 12) strength += 15;
+            if (/[a-z]/.test(password)) strength += 15;
+            if (/[A-Z]/.test(password)) strength += 15;
+            if (/[0-9]/.test(password)) strength += 15;
+            if (/[^a-zA-Z0-9]/.test(password)) strength += 15;
+            
+            if (strength < 30) {
+                return { percent: 20, color: '#e74c3c', text: 'Слабый' };
+            } else if (strength < 50) {
+                return { percent: 40, color: '#f39c12', text: 'Средний' };
+            } else if (strength < 70) {
+                return { percent: 60, color: '#3498db', text: 'Хороший' };
+            } else {
+                return { percent: 100, color: '#27ae60', text: 'Надёжный' };
+            }
+        }
+
+        // ========== ПОКАЗ ПРОФИЛЯ ==========
+        function showUserProfile(userData) {
+            document.getElementById('userProfile').style.display = 'block';
+            document.getElementById('authForms').style.display = 'none';
+            
+            // Основная информация
+            document.getElementById('userName').textContent = userData.name || 'Пользователь';
+            document.getElementById('userEmail').textContent = userData.email || '';
+            document.getElementById('currentEmailDisplay').textContent = userData.email || '';
+            document.getElementById('currentUsernameDisplay').textContent = userData.name || '';
+            
+            // Телефон
+            document.getElementById('userPhone').textContent = userData.phone || 'Не указан';
+            
+            // Возраст и дата рождения
+            if (userData.birthdate) {
+                const age = calculateAge(userData.birthdate);
+                document.getElementById('userAge').textContent = age + ' лет';
+                document.getElementById('userBirthday').textContent = formatDate(userData.birthdate);
+            } else {
+                document.getElementById('userAge').textContent = 'Не указан';
+                document.getElementById('userBirthday').textContent = '';
+            }
+            
+            // Локация
+            document.getElementById('userCountry').textContent = userData.country || 'Не указана';
+            document.getElementById('userCity').textContent = userData.city || 'Не указан';
+            
+            let address = '';
+            if (userData.street) address += userData.street;
+            if (userData.house) address += ', д. ' + userData.house;
+            if (userData.apartment) address += ', кв. ' + userData.apartment;
+            document.getElementById('userAddress').textContent = address || 'Не указан';
+            
+            // Аватар
+            if (userData.avatar) {
+                document.getElementById('profileAvatar').src = userData.avatar;
+            }
+            
+            // Роль и бейдж
+            const roleBadge = document.getElementById('userRoleBadge');
+            if (userData.role === 'admin') {
+                roleBadge.innerHTML = '<i class="fas fa-shield-alt"></i> Администратор';
+                roleBadge.style.backgroundColor = '#2c3e50';
+                roleBadge.style.color = 'white';
+            } else {
+                roleBadge.innerHTML = '<i class="fas fa-check-circle"></i> Подтвержденный аккаунт';
+                roleBadge.style.backgroundColor = '#e8f5e9';
+                roleBadge.style.color = '#27ae60';
+            }
+            
+            // Статус верификации email
+            const emailVerificationStatus = document.getElementById('emailVerificationStatus');
+            if (userData.emailVerified) {
+                emailVerificationStatus.innerHTML = '<i class="fas fa-check-circle"></i> Подтверждена';
+                emailVerificationStatus.className = 'verification-badge';
+            } else {
+                emailVerificationStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Не подтверждена';
+                emailVerificationStatus.style.backgroundColor = '#fff3e0';
+                emailVerificationStatus.style.color = '#f39c12';
+            }
+            
+            // Настройки уведомлений
+            if (userData.notifications) {
+                document.getElementById('notifyEmail').checked = userData.notifications.email || false;
+                document.getElementById('notifySms').checked = userData.notifications.sms || false;
+                document.getElementById('notifyStatus').checked = userData.notifications.status || false;
+                document.getElementById('notifyNews').checked = userData.notifications.news || false;
+            }
+            
+            // Двухфакторная аутентификация
+            document.getElementById('twoFactorAuth').checked = userData.twoFactorAuth || false;
+            
+            // Обновляем выпадающее меню в шапке
+            updateHeaderUserMenu(userData);
+        }
+
+        // ========== ОБНОВЛЕНИЕ МЕНЮ В ШАПКЕ ==========
+        function updateHeaderUserMenu(userData) {
+            const userIcon = document.querySelector('.user-icon');
+            if (userIcon) {
+                const userText = userIcon.querySelector('.user-text');
+                userText.textContent = userData.name ? userData.name.split(' ')[0] : 'Профиль';
+            }
+            
+            const dropdownName = document.getElementById('dropdownUserName');
+            const dropdownEmail = document.getElementById('dropdownUserEmail');
+            const dropdownRole = document.getElementById('dropdownUserRole');
+            
+            if (dropdownName) dropdownName.textContent = userData.name || 'Пользователь';
+            if (dropdownEmail) dropdownEmail.textContent = userData.email || '';
+            if (dropdownRole) {
+                dropdownRole.textContent = userData.role === 'admin' ? 'Администратор' : 'Клиент';
+                dropdownRole.className = `user-dropdown-role role-badge ${userData.role || 'user'}`;
+            }
+        }
+
+        // ========== ПОКАЗ ФОРМ АВТОРИЗАЦИИ ==========
+        function showAuthForms() {
+            document.getElementById('userProfile').style.display = 'none';
+            document.getElementById('authForms').style.display = 'block';
+            currentUser = null;
+            
+            // Обновляем ссылку в header
+            const userIcon = document.querySelector('.user-icon');
+            if (userIcon) {
+                userIcon.querySelector('.user-text').textContent = 'Войти';
+            }
+        }
+
+        // ========== РАСЧЕТ ВОЗРАСТА ==========
+        function calculateAge(birthdate) {
+            const today = new Date();
+            const birthDate = new Date(birthdate);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        // ========== ФОРМАТИРОВАНИЕ ДАТЫ ==========
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU');
+        }
+
+        // ========== СКРЫТИЕ ВСЕХ СООБЩЕНИЙ ==========
+        function hideAllMessages() {
+            document.querySelectorAll('.auth-error, .auth-success').forEach(el => {
+                el.style.display = 'none';
+            });
+        }
+
+        // ========== ПЕРЕКЛЮЧЕНИЕ МЕЖДУ ВКЛАДКАМИ ==========
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const authForms = document.querySelectorAll('.auth-form');
+        
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                authTabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                authForms.forEach(form => {
+                    if (form.id === tabName + 'Form') {
+                        form.classList.add('active');
+                    } else {
+                        form.classList.remove('active');
+                    }
+                });
+                
+                hideAllMessages();
+            });
+        });
+        
+        // Переключение между формами
+        document.getElementById('switchToRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('.auth-tab[data-tab="register"]').click();
+        });
+        
+        document.getElementById('switchToLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('.auth-tab[data-tab="login"]').click();
+        });
+        
+        document.getElementById('forgotPassword').addEventListener('click', function(e) {
+            e.preventDefault();
+            authForms.forEach(form => form.classList.remove('active'));
+            document.getElementById('forgotPasswordForm').classList.add('active');
+            hideAllMessages();
+        });
+        
+        document.getElementById('backToLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            authForms.forEach(form => form.classList.remove('active'));
+            document.getElementById('loginForm').classList.add('active');
+            hideAllMessages();
+        });
+        
+        // ========== ПОКАЗ/СКРЫТИЕ ПАРОЛЯ ==========
+        document.querySelectorAll('.password-toggle').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+        
+        // ========== ЗАГРУЗКА АВАТАРА ==========
+        document.getElementById('avatarUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('profileAvatar').src = event.target.result;
+                    
+                    if (currentUser) {
+                        currentUser.avatar = event.target.result;
+                        // Обновляем в базе данных
+                        const userIndex = usersDatabase.findIndex(u => u.email === currentUser.email);
+                        if (userIndex !== -1) {
+                            usersDatabase[userIndex].avatar = event.target.result;
+                            saveUsersDatabase();
+                        }
+                        saveUserData();
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // ========== ВХОД ==========
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const remember = document.querySelector('input[name="remember"]').checked;
+            
+            if (!email || !password) {
+                showMessage('loginError', 'Заполните все поля');
+                return;
+            }
+            
+            setTimeout(() => {
+                // Ищем пользователя в базе данных
+                const user = usersDatabase.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    const userData = { ...user };
+                    delete userData.password;
+                    
+                    if (remember) {
+                        localStorage.setItem('user', JSON.stringify(userData));
+                    } else {
+                        sessionStorage.setItem('user', JSON.stringify(userData));
+                    }
+                    
+                    currentUser = userData;
+                    showUserProfile(userData);
+                } else {
+                    showMessage('loginError', 'Неправильный email или пароль');
+                }
+            }, 500);
+        });
+        
+        // ========== РЕГИСТРАЦИЯ ==========
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const phone = document.getElementById('registerPhone').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            const terms = document.getElementById('terms').checked;
+            const birthdate = document.getElementById('registerBirthdate').value;
+            const country = document.getElementById('registerCountry').value;
+            const city = document.getElementById('registerCity').value;
+            const street = document.getElementById('registerStreet').value;
+            const house = document.getElementById('registerHouse').value;
+            const apartment = document.getElementById('registerApartment').value;
+            
+            // Валидация
+            if (!name || !email || !phone || !password || !confirmPassword) {
+                showMessage('registerError', 'Заполните все обязательные поля');
+                return;
+            }
+            
+            if (password.length < 8) {
+                showMessage('registerError', 'Пароль должен быть не менее 8 символов');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage('registerError', 'Пароли не совпадают');
+                return;
+            }
+            
+            if (!terms) {
+                showMessage('registerError', 'Необходимо согласие с условиями');
+                return;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showMessage('registerError', 'Некорректный email');
+                return;
+            }
+            
+            setTimeout(() => {
+                // Проверяем, нет ли такого пользователя
+                const existingUser = usersDatabase.find(u => u.email === email);
+                
+                if (existingUser) {
+                    showMessage('registerError', 'Пользователь с таким email уже существует');
+                    return;
+                }
+                
+                // Создаем нового пользователя
+                const newUser = {
+                    id: 'user' + (usersDatabase.length + 1),
+                    email: email,
+                    password: password,
+                    name: name,
+                    role: 'user',
+                    phone: phone,
+                    birthdate: birthdate,
+                    country: country,
+                    city: city,
+                    street: street,
+                    house: house,
+                    apartment: apartment,
+                    avatar: null,
+                    emailVerified: false,
+                    notifications: {
+                        email: true,
+                        sms: false,
+                        status: true,
+                        news: false
+                    },
+                    twoFactorAuth: false
+                };
+                
+                usersDatabase.push(newUser);
+                saveUsersDatabase();
+                
+                showMessage('registerSuccess', 'Регистрация успешна! Теперь вы можете войти.', true);
+                
+                this.reset();
+                
+                setTimeout(() => {
+                    document.querySelector('.auth-tab[data-tab="login"]').click();
+                    document.getElementById('loginEmail').value = email;
+                    document.getElementById('loginPassword').focus();
+                }, 2000);
+            }, 500);
+        });
+        
+        // ========== ВОССТАНОВЛЕНИЕ ПАРОЛЯ ==========
+        document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('forgotEmail').value;
+            
+            if (!email) {
+                showMessage('forgotError', 'Введите email');
+                return;
+            }
+            
+            setTimeout(() => {
+                const user = usersDatabase.find(u => u.email === email);
+                if (user) {
+                    showMessage('forgotSuccess', 'Инструкции по восстановлению пароля отправлены на ' + email, true);
+                } else {
+                    showMessage('forgotError', 'Email не найден');
+                }
+                this.reset();
+                
+                setTimeout(() => {
+                    document.getElementById('backToLogin').click();
+                }, 3000);
+            }, 500);
+        });
+        
+        // ========== РЕДАКТИРОВАНИЕ ПРОФИЛЯ (ЛИЧНЫЕ ДАННЫЕ) ==========
+        document.getElementById('editProfileBtn').addEventListener('click', function() {
+            if (currentUser) {
+                document.getElementById('editName').value = currentUser.name || '';
+                document.getElementById('editEmail').value = currentUser.email || '';
+                document.getElementById('editPhone').value = currentUser.phone || '';
+                document.getElementById('editBirthdate').value = currentUser.birthdate || '';
+                
+                if (currentUser.birthdate) {
+                    document.getElementById('editAge').value = calculateAge(currentUser.birthdate);
+                }
+                
+                document.getElementById('editCountry').value = currentUser.country || 'Россия';
+                document.getElementById('editCity').value = currentUser.city || '';
+                document.getElementById('editStreet').value = currentUser.street || '';
+                document.getElementById('editHouse').value = currentUser.house || '';
+                document.getElementById('editApartment').value = currentUser.apartment || '';
+                
+                if (currentUser.avatar) {
+                    document.getElementById('editAvatarPreview').src = currentUser.avatar;
+                }
+                
+                document.getElementById('editProfileModal').classList.add('active');
+            }
+        });
+        
+        // Обновление возраста при изменении даты рождения
+        document.getElementById('editBirthdate').addEventListener('change', function() {
+            if (this.value) {
+                document.getElementById('editAge').value = calculateAge(this.value);
+            }
+        });
+        
+        // Сохранение личных данных
+        document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (currentUser) {
+                // Обновляем данные пользователя
+                currentUser.name = document.getElementById('editName').value;
+                currentUser.email = document.getElementById('editEmail').value;
+                currentUser.phone = document.getElementById('editPhone').value;
+                currentUser.birthdate = document.getElementById('editBirthdate').value;
+                currentUser.country = document.getElementById('editCountry').value;
+                currentUser.city = document.getElementById('editCity').value;
+                currentUser.street = document.getElementById('editStreet').value;
+                currentUser.house = document.getElementById('editHouse').value;
+                currentUser.apartment = document.getElementById('editApartment').value;
+                
+                // Обновляем в базе данных
+                const userIndex = usersDatabase.findIndex(u => u.email === currentUser.email);
+                if (userIndex !== -1) {
+                    usersDatabase[userIndex] = { ...usersDatabase[userIndex], ...currentUser };
+                    saveUsersDatabase();
+                }
+                
+                saveUserData();
+                showUserProfile(currentUser);
+                
+                document.getElementById('editProfileModal').classList.remove('active');
+                showNotification('Профиль успешно обновлен!');
+            }
+        });
+        
+        // ========== СМЕНА EMAIL ==========
+        window.openChangeEmailModal = function() {
+            document.getElementById('changeEmailModal').classList.add('active');
+        };
+        
+        window.closeChangeEmailModal = function() {
+            document.getElementById('changeEmailModal').classList.remove('active');
+            document.getElementById('changeEmailForm').reset();
+        };
+        
+        document.getElementById('changeEmailForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentEmailPassword').value;
+            const newEmail = document.getElementById('newEmail').value;
+            const confirmNewEmail = document.getElementById('confirmNewEmail').value;
+            
+            // Проверяем текущий пароль
+            const userInDb = usersDatabase.find(u => u.email === currentUser.email);
+            if (!userInDb || userInDb.password !== currentPassword) {
+                showNotification('Неверный текущий пароль', 'error');
+                return;
+            }
+            
+            // Проверяем совпадение email
+            if (newEmail !== confirmNewEmail) {
+                showNotification('Email не совпадают', 'error');
+                return;
+            }
+            
+            // Проверяем, не занят ли email
+            if (usersDatabase.some(u => u.email === newEmail && u.email !== currentUser.email)) {
+                showNotification('Этот email уже используется', 'error');
+                return;
+            }
+            
+            // Обновляем email в текущем пользователе
+            const oldEmail = currentUser.email;
+            currentUser.email = newEmail;
+            currentUser.emailVerified = false;
+            
+            // Обновляем в базе данных
+            const userIndex = usersDatabase.findIndex(u => u.email === oldEmail);
+            if (userIndex !== -1) {
+                usersDatabase[userIndex].email = newEmail;
+                usersDatabase[userIndex].emailVerified = false;
+                saveUsersDatabase();
+            }
+            
+            // Обновляем в localStorage/sessionStorage
+            saveUserData();
+            
+            // Обновляем отображение
+            showUserProfile(currentUser);
+            closeChangeEmailModal();
+            showNotification('Email успешно изменен! Пожалуйста, подтвердите новый адрес.');
+        });
+        
+        // ========== СМЕНА ПАРОЛЯ ==========
+        window.openChangePasswordModal = function() {
+            document.getElementById('changePasswordModal').classList.add('active');
+        };
+        
+        window.closeChangePasswordModal = function() {
+            document.getElementById('changePasswordModal').classList.remove('active');
+            document.getElementById('changePasswordForm').reset();
+            
+            // Сброс индикатора сложности
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const strengthText = document.getElementById('passwordStrengthText');
+            strengthBar.style.width = '0%';
+            strengthText.textContent = 'Введите новый пароль';
+        };
+        
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            // Проверяем текущий пароль
+            const userInDb = usersDatabase.find(u => u.email === currentUser.email);
+            if (!userInDb || userInDb.password !== currentPassword) {
+                showNotification('Неверный текущий пароль', 'error');
+                return;
+            }
+            
+            // Проверяем новый пароль
+            if (newPassword.length < 8) {
+                showNotification('Пароль должен содержать минимум 8 символов', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmNewPassword) {
+                showNotification('Новые пароли не совпадают', 'error');
+                return;
+            }
+            
+            if (newPassword === currentPassword) {
+                showNotification('Новый пароль должен отличаться от текущего', 'error');
+                return;
+            }
+            
+            // Обновляем пароль в базе данных
+            const userIndex = usersDatabase.findIndex(u => u.email === currentUser.email);
+            if (userIndex !== -1) {
+                usersDatabase[userIndex].password = newPassword;
+                saveUsersDatabase();
+            }
+            
+            closeChangePasswordModal();
+            showNotification('Пароль успешно изменен!');
+        });
+        
+        // ========== СМЕНА ИМЕНИ ПОЛЬЗОВАТЕЛЯ ==========
+        window.openChangeUsernameModal = function() {
+            document.getElementById('newUsername').value = currentUser.name || '';
+            document.getElementById('changeUsernameModal').classList.add('active');
+        };
+        
+        window.closeChangeUsernameModal = function() {
+            document.getElementById('changeUsernameModal').classList.remove('active');
+            document.getElementById('changeUsernameForm').reset();
+        };
+        
+        document.getElementById('changeUsernameForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newUsername = document.getElementById('newUsername').value;
+            const password = document.getElementById('usernamePassword').value;
+            
+            // Проверяем пароль
+            const userInDb = usersDatabase.find(u => u.email === currentUser.email);
+            if (!userInDb || userInDb.password !== password) {
+                showNotification('Неверный пароль', 'error');
+                return;
+            }
+            
+            // Обновляем имя
+            currentUser.name = newUsername;
+            
+            // Обновляем в базе данных
+            const userIndex = usersDatabase.findIndex(u => u.email === currentUser.email);
+            if (userIndex !== -1) {
+                usersDatabase[userIndex].name = newUsername;
+                saveUsersDatabase();
+            }
+            
+            // Обновляем в localStorage/sessionStorage
+            saveUserData();
+            
+            // Обновляем отображение
+            showUserProfile(currentUser);
+            closeChangeUsernameModal();
+            showNotification('Имя пользователя успешно изменено!');
+        });
+        
+        // ========== СОХРАНЕНИЕ НАСТРОЕК УВЕДОМЛЕНИЙ ==========
+        window.saveNotificationSettings = function() {
+            if (currentUser) {
+                currentUser.notifications = {
+                    email: document.getElementById('notifyEmail').checked,
+                    sms: document.getElementById('notifySms').checked,
+                    status: document.getElementById('notifyStatus').checked,
+                    news: document.getElementById('notifyNews').checked
+                };
+                
+                // Обновляем в базе данных
+                const userIndex = usersDatabase.findIndex(u => u.email === currentUser.email);
+                if (userIndex !== -1) {
+                    usersDatabase[userIndex].notifications = currentUser.notifications;
+                    saveUsersDatabase();
+                }
+                
+                saveUserData();
+                showNotification('Настройки уведомлений сохранены!');
+            }
+        };
+        
+        // ========== ДВУХФАКТОРНАЯ АУТЕНТИФИКАЦИЯ ==========
+        document.getElementById('twoFactorAuth').addEventListener('change', function(e) {
+            if (currentUser) {
+                currentUser.twoFactorAuth = this.checked;
+                
+                // Обновляем в базе данных
+                const userIndex = usersDatabase.findIndex(u => u.email === currentUser.email);
+                if (userIndex !== -1) {
+                    usersDatabase[userIndex].twoFactorAuth = this.checked;
+                    saveUsersDatabase();
+                }
+                
+                saveUserData();
+                showNotification(this.checked ? 
+                    'Двухфакторная аутентификация включена' : 
+                    'Двухфакторная аутентификация отключена');
+            }
+        });
+        
+        // ========== СОХРАНЕНИЕ ДАННЫХ ПОЛЬЗОВАТЕЛЯ ==========
+        function saveUserData() {
+            if (currentUser) {
+                const userData = { ...currentUser };
+                delete userData.password;
+                
+                // Сохраняем в localStorage или sessionStorage
+                if (localStorage.getItem('user')) {
+                    localStorage.setItem('user', JSON.stringify(userData));
+                }
+                if (sessionStorage.getItem('user')) {
+                    sessionStorage.setItem('user', JSON.stringify(userData));
+                }
+            }
+        }
+        
+        // ========== ЗАКРЫТИЕ МОДАЛЬНЫХ ОКОН ==========
+        document.getElementById('closeModalBtn').addEventListener('click', function() {
+            document.getElementById('editProfileModal').classList.remove('active');
+        });
+        
+        window.addEventListener('click', function(e) {
+            const editModal = document.getElementById('editProfileModal');
+            const emailModal = document.getElementById('changeEmailModal');
+            const passwordModal = document.getElementById('changePasswordModal');
+            const usernameModal = document.getElementById('changeUsernameModal');
+            
+            if (e.target === editModal) editModal.classList.remove('active');
+            if (e.target === emailModal) emailModal.classList.remove('active');
+            if (e.target === passwordModal) passwordModal.classList.remove('active');
+            if (e.target === usernameModal) usernameModal.classList.remove('active');
+        });
+        
+        // ========== ВЫХОД ==========
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
+            showAuthForms();
+            showNotification('Вы успешно вышли из системы');
+        });
+        
+        // ========== СОЦИАЛЬНЫЕ КНОПКИ ==========
+        document.querySelectorAll('.social-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('В реальном приложении здесь будет интеграция с социальными сетями');
+            });
+        });
+        
+        // ========== ПОКАЗ УВЕДОМЛЕНИЯ ==========
+        function showMessage(elementId, text, isSuccess = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = text;
+            element.style.display = 'block';
+            
+            if (isSuccess) {
+                element.className = 'auth-success';
+            } else {
+                element.className = 'auth-error';
+            }
+            
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showNotification(text, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: ${type === 'success' ? '#27ae60' : '#e74c3c'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+                font-weight: 500;
+            `;
+            notification.textContent = text;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

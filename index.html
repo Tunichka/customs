@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таможенное оформление и оформление под ключ</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Дополнительные стили для профиля в header */
+        .user-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            color: #2c3e50;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .user-icon:hover {
+            background-color: #d0ecff;
+            transform: translateY(-2px);
+        }
+        
+        .user-icon i {
+            font-size: 18px;
+        }
+        
+        .user-text {
+            font-weight: 500;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 220px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-top: 10px;
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .user-dropdown.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .user-dropdown-header {
+            padding: 15px;
+            background: linear-gradient(135deg, #2c3e50, #2980b9);
+            color: white;
+        }
+        
+        .user-dropdown-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .user-dropdown-email {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .user-dropdown-item {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .user-dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .user-dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: #2980b9;
+        }
+        
+        .user-dropdown-item i {
+            width: 20px;
+            color: #2980b9;
+        }
+        
+        .user-dropdown-divider {
+            height: 1px;
+            background-color: #eee;
+            margin: 5px 0;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== РОСКОШНЫЙ ДИЗАЙН БЛОКА ПАРТНЁРОВ ========== */
+        .partners {
+            padding: 80px 0;
+            background: linear-gradient(145deg, #ffffff 0%, #f9fcff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Декоративные элементы фона */
+        .partners::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(41, 128, 185, 0.03) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .partners::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            right: -50px;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(44, 62, 80, 0.03) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .partners .section-title {
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .partners-grid {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 50px;
+            flex-wrap: wrap;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Премиальные карточки партнёров */
+        .partner-card {
+            flex: 0 1 350px;
+            background: white;
+            border-radius: 24px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: 1px solid rgba(41, 128, 185, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Эффект свечения при наведении */
+        .partner-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2980b9, #2c3e50, #2980b9);
+            background-size: 200% 100%;
+            animation: gradientMove 3s ease infinite;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .partner-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 50px rgba(41, 128, 185, 0.15);
+            border-color: rgba(41, 128, 185, 0.3);
+        }
+
+        .partner-card:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Контейнер для логотипа - идеально центрированный */
+        .partner-logo-container {
+            height: 100px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            padding: 10px;
+        }
+
+        /* Стили для изображений логотипов */
+        .partner-logo {
+            max-width: 220px;
+            max-height: 80px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        .partner-card:hover .partner-logo {
+            transform: scale(1.05);
+        }
+
+        /* Изящный разделитель */
+        .partner-divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #2980b9, #2c3e50, #2980b9, transparent);
+            margin: 15px 0 20px;
+            border-radius: 2px;
+            opacity: 0.7;
+        }
+
+        /* Название банка */
+        .partner-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        /* Описание / специализация */
+        .partner-description {
+            font-size: 15px;
+            color: #5d6d7e;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-weight: 400;
+        }
+
+        /* Стильная кнопка-ссылка */
+        .partner-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 28px;
+            background: transparent;
+            border: 1.5px solid rgba(41, 128, 185, 0.3);
+            border-radius: 50px;
+            color: #2980b9;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-top: auto;
+        }
+
+        .partner-link i {
+            font-size: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .partner-link:hover {
+            background: linear-gradient(135deg, #2980b9, #2c3e50);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 10px 20px rgba(41, 128, 185, 0.2);
+        }
+
+        .partner-link:hover i {
+            transform: translateX(5px);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .partners {
+                padding: 60px 0;
+            }
+            
+            .partners-grid {
+                gap: 30px;
+            }
+            
+            .partner-card {
+                flex: 0 1 300px;
+                padding: 30px 20px;
+            }
+            
+            .partner-logo {
+                max-width: 180px;
+                max-height: 70px;
+            }
+            
+            .partner-name {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .partner-card {
+                flex: 0 1 100%;
+            }
+        }
+
+     /* Стили для выпадающего меню */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdown-toggle i {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.dropdown:hover .dropdown-toggle i {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    min-width: 200px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    border: 1px solid rgba(0, 40, 104, 0.08);
+}
+
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(5px);
+}
+
+.dropdown-menu li {
+    list-style: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    float: none;
+    clear: both;
+}
+
+.dropdown-menu a {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #333;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    white-space: nowrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.dropdown-menu a i {
+    width: 18px;
+    color: #002868;
+    font-size: 14px;
+    text-align: center;
+}
+
+.dropdown-menu a:hover {
+    background: rgba(0, 40, 104, 0.05);
+    color: #002868;
+}
+
+/* Дополнительные стили для активного состояния */
+.dropdown-menu a.active {
+    background: #002868;
+    color: white;
+}
+
+.dropdown-menu a.active i {
+    color: white;
+}
+
+/* Стили для разделителя в меню */
+.dropdown-divider {
+    height: 1px;
+    background: rgba(0, 40, 104, 0.08);
+    margin: 8px 0;
+}
+
+/* Важно! Переопределяем возможные глобальные стили */
+.dropdown-menu li,
+.dropdown-menu li * {
+    display: block;
+}
+
+.dropdown-menu ul,
+.dropdown-menu li,
+.dropdown-menu a {
+    float: none;
+}
+
+.dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu li {
+    display: list-item;
+}
+
+/* Выравнивание иконок и текста */
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 24px;
+}
+
+.dropdown-menu a i {
+    width: 18px;
+    font-size: 15px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Увеличиваем размер окна */
+.dropdown-menu {
+    min-width: 220px;
+    padding: 12px 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #002868;
+}
+
+.logo svg,
+.logo img {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+            <img src="logo_icon.svg" alt="ТаможСервис" width="32" height="32">
+            Тамож<span>Сервис</span>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul id="mainMenu">
+                    <li><a href="#home">Главная</a></li>
+                    <li><a href="#services">Услуги</a></li>
+                    <li><a href="calculator.html">Калькулятор ВЭД</a></li>
+                    <li><a href="application.html">Мои заявки</a></li>
+                    <li><a href="#directions">Направления</a></li>
+                    <li class="dropdown">
+                    <a href="#" class="dropdown-toggle">О нас <i class="fas fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="about.html"><i class="fas fa-building"></i> О компании</a></li>
+                        <li><a href="#contacts"><i class="fas fa-map-marker-alt"></i> Контакты</a></li>
+                    </ul>
+                </li>
+                </ul>
+            </nav>
+            <div class="header-actions user-menu" id="userMenuContainer">
+                <a href="auth.html" class="user-icon" id="userIcon">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="user-text">Войти</span>
+                </a>
+                <!-- Выпадающее меню для авторизованного пользователя -->
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-header">
+                        <div class="user-dropdown-name" id="dropdownUserName">Пользователь</div>
+                        <div class="user-dropdown-email" id="dropdownUserEmail">email@example.com</div>
+                    </div>
+                    <a href="auth.html" class="user-dropdown-item">
+                        <i class="fas fa-user"></i>
+                        Мой профиль
+                    </a>
+                    <a href="application.html" class="user-dropdown-item">
+                        <i class="fas fa-clipboard-list"></i>
+                        Мои заявки
+                    </a>
+                    <a href="calculator.html" class="user-dropdown-item">
+                        <i class="fas fa-calculator"></i>
+                        Калькулятор
+                    </a>
+                    <div class="user-dropdown-divider"></div>
+                    <a href="#" class="user-dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Выйти
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Таможенное оформление и оформление под ключ</h1>
+            <p>Импорт, экспорт и перевозка грузов без риска и задержек</p>
+            <div class="cta-buttons">
+                <a href="calculator.html" class="btn">Рассчитать стоимость</a>
+                <a href="#contact-form" class="btn btn-outline">Оставить заявку</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Directions -->
+    <section class="directions" id="directions">
+        <div class="container">
+            <h2 class="section-title">Основные направления</h2>
+            <div class="direction-cards">
+                <div class="direction-card">
+                    <div class="flag">
+                        <img src="cn.svg" alt="Флаг Китая" class="flag-img">
+                    </div>
+                    <h3>Китай</h3>
+                    <p>Оформление грузов из Китая с учетом всех таможенных требований и процедур</p>
+                </div>
+                <div class="direction-card">
+                    <div class="flag">
+                        <img src="by.svg" alt="Флаг Беларуси" class="flag-img">
+                    </div>
+                    <h3>Беларусь</h3>
+                    <p>Экспорт и импорт товаров в/из Беларуси с полным таможенным сопровождением</p>
+                </div>
+                <div class="direction-card">
+                    <div class="flag">
+                        <img src="ru.svg" alt="Флаг России" class="flag-img">
+                    </div>
+                    <h3>Россия</h3>
+                    <p>Таможенное оформление на территории РФ с учетом всех региональных особенностей</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advantages -->
+    <section class="advantages">
+        <div class="container">
+            <h2 class="section-title">Преимущества работы с нами</h2>
+            <div class="advantage-items">
+                <div class="advantage-item">
+                    <div class="advantage-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Опыт и надежность</h3>
+                    <p>Более 10 лет успешной работы в сфере таможенного оформления. Гарантия легальности всех операций.</p>
+                </div>
+                <div class="advantage-item">
+                    <div class="advantage-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Прозрачный расчет</h3>
+                    <p>Четкая фиксированная стоимость услуг без скрытых платежей и комиссий.</p>
+                </div>
+                <div class="advantage-item">
+                    <div class="advantage-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Личный менеджер</h3>
+                    <p>Персональный специалист, сопровождающий ваш груз на всех этапах таможенного оформления.</p>
+                </div>
+                <div class="advantage-item">
+                    <div class="advantage-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Индивидуальный подход</h3>
+                    <p>Разработка оптимальных решений с учетом специфики вашего груза и требований законодательства.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Новый раздел: Услуги -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">Наши услуги</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3>Таможенное оформление</h3>
+                    <p>Полный комплекс услуг по таможенному оформлению грузов любого типа</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Расчет таможенных платежей</h3>
+                    <p>Точный расчет таможенных платежей с использованием <a href="calculator.html">калькулятора ВЭД</a></p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <h3>Сертификация товаров</h3>
+                    <p>Оформление необходимых сертификатов и разрешительной документации</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-truck-loading"></i>
+                    </div>
+                    <h3>Логистика и доставка</h3>
+                    <p>Организация доставки грузов "от двери до двери"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="contact" id="contact-form">
+        <div class="container">
+            <h2 class="section-title">Оставить заявку на консультацию</h2>
+            <div class="contact-container">
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name">Имя</label>
+                            <input type="text" id="name" name="name" required placeholder="Введите ваше имя">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Телефон</label>
+                            <input type="tel" id="phone" name="phone" required placeholder="+7 (XXX) XXX-XX-XX">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Сообщение</label>
+                            <textarea id="message" name="message" placeholder="Опишите ваш вопрос или задачу"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Прикрепить файл</label>
+                            <div class="file-upload">
+                                <input type="file" id="file" name="file">
+                                <label for="file" class="file-upload-label">
+                                    <i class="fas fa-paperclip"></i> Выберите файл (до 10 МБ)
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="submit-btn">ОСТАВИТЬ ЗАЯВКУ</button>
+                    </form>
+                </div>
+                <div class="contact-info">
+                    <h3>Контакты</h3>
+                    <div class="contact-details">
+                        <div class="contact-detail">
+                            <i class="fas fa-phone-alt"></i>
+                            <div>
+                                <strong>+7 (333) 335-33-33</strong><br>
+                                <small>Телефон для связи</small>
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <strong>Москва</strong><br>
+                                Центральная набережная 6, стр 2
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <strong>info@company.ru</strong><br>
+                                <small>Электронная почта</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="working-hours">
+                        <h4>Режим работы:</h4>
+                        <p>Пн-Пт 9:00-19:00 (МСК)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== НАШИ ПАРТНЁРЫ - ПРЕМИАЛЬНЫЙ ДИЗАЙН ========== -->
+    <section class="partners">
+        <div class="container">
+            <h2 class="section-title">Надёжные партнёры</h2>
+            <div class="partners-grid">
+                
+                <!-- Карточка Альфа-Банка -->
+                <div class="partner-card">
+                    <div class="partner-logo-container">
+                        <!-- ВСТАВЬТЕ СЮДА ПУТЬ К ЛОГОТИПУ АЛЬФА-БАНКА -->
+                        <img src="logo_alfa.png" alt="Альфа-Банк" class="partner-logo">
+                    </div>
+                    <div class="partner-divider"></div>
+                    <h3 class="partner-name">Альфа-Банк</h3>
+                    <p class="partner-description">
+                        Крупнейший частный банк России, надёжный финансовый партнёр для внешнеэкономических операций
+                    </p>
+                    <!-- ССЫЛКА НА САЙТ БАНКА -->
+                    <a href="https://alfabank.ru" target="_blank" rel="noopener noreferrer" class="partner-link">
+                        Перейти на сайт <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <!-- Карточка Азиатско-Тихоокеанского Банка -->
+                <div class="partner-card">
+                    <div class="partner-logo-container">
+                        <!-- ВСТАВЬТЕ СЮДА ПУТЬ К ЛОГОТИПУ АТБ -->
+                        <img src="logo-atb.png" alt="Азиатско-Тихоокеанский Банк" class="partner-logo">
+                    </div>
+                    <div class="partner-divider"></div>
+                    <h3 class="partner-name">АТБ</h3>
+                    <p class="partner-description">
+                        Азиатско-Тихоокеанский Банк — экспертиза в работе с азиатскими рынками и валютном контроле
+                    </p>
+                    <!-- ССЫЛКА НА САЙТ БАНКА -->
+                    <a href="https://atb.su" target="_blank" rel="noopener noreferrer" class="partner-link">
+                        Перейти на сайт <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacts">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>ТаможСервис</h3>
+                    <p>Профессиональное таможенное оформление грузов из Китая, Беларуси и России. Полное сопровождение "под ключ".</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Навигация</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Главная</a></li>
+                        <li><a href="#services">Услуги</a></li>
+                        <li><a href="calculator.html">Калькулятор ВЭД</a></li>
+                        <li><a href="application.html">Мои заявки</a></li>
+                        <li><a href="#directions">Направления</a></li>
+                        <li><a href="#contacts">Контакты</a></li>
+                        <li><a href="about.html">О компании</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-phone-alt"></i> +7 (333) 335-33-33</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Москва, Павелецкая площадь, 3</li>
+                        <li><i class="fas fa-envelope"></i> info@company.ru</li>
+                        <li><i class="fas fa-clock"></i> Пн-Пт 9:00-19:00 (МСК)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2026 ТаможСервис. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Проверка авторизации пользователя
+        function checkAuth() {
+            // Получаем данные пользователя из localStorage или sessionStorage
+            const userData = localStorage.getItem('user') || sessionStorage.getItem('user');
+            
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    updateUserInterface(user);
+                } catch (e) {
+                    console.error('Ошибка при парсинге данных пользователя:', e);
+                    resetUserInterface();
+                }
+            } else {
+                resetUserInterface();
+            }
+        }
+
+        // Обновление интерфейса для авторизованного пользователя
+        function updateUserInterface(user) {
+            const userIcon = document.querySelector('.user-icon');
+            const userText = document.querySelector('.user-text');
+            const userDropdown = document.getElementById('userDropdown');
+            const dropdownName = document.getElementById('dropdownUserName');
+            const dropdownEmail = document.getElementById('dropdownUserEmail');
+            
+            if (userIcon) {
+                // Меняем ссылку с auth.html на javascript:void(0) чтобы не переходить на страницу входа
+                userIcon.href = 'javascript:void(0)';
+                
+                // Обновляем текст на имя пользователя
+                if (userText) {
+                    const firstName = user.name ? user.name.split(' ')[0] : 'Профиль';
+                    userText.textContent = firstName;
+                }
+                
+                // Добавляем обработчик для открытия выпадающего меню
+                userIcon.removeEventListener('click', toggleUserMenu);
+                userIcon.addEventListener('click', toggleUserMenu);
+            }
+            
+            // Обновляем данные в выпадающем меню
+            if (dropdownName) {
+                dropdownName.textContent = user.name || 'Пользователь';
+            }
+            if (dropdownEmail) {
+                dropdownEmail.textContent = user.email || 'email@example.com';
+            }
+            
+            // Добавляем пункт "Мои заявки" в навигацию, если его нет
+            addRequestsMenuItem();
+        }
+
+        // Сброс интерфейса для неавторизованного пользователя
+        function resetUserInterface() {
+            const userIcon = document.querySelector('.user-icon');
+            const userText = document.querySelector('.user-text');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            if (userIcon) {
+                userIcon.href = 'auth.html';
+                userIcon.removeEventListener('click', toggleUserMenu);
+            }
+            
+            if (userText) {
+                userText.textContent = 'Войти';
+            }
+            
+            if (userDropdown) {
+                userDropdown.classList.remove('active');
+            }
+            
+            // Удаляем пункт "Мои заявки" из навигации
+            removeRequestsMenuItem();
+        }
+
+        // Переключение выпадающего меню
+        function toggleUserMenu(e) {
+            e.preventDefault();
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('active');
+            }
+        }
+
+        // Добавление пункта "Мои заявки" в навигацию
+        function addRequestsMenuItem() {
+            const mainMenu = document.getElementById('mainMenu');
+            if (!mainMenu) return;
+            
+            // Проверяем, есть ли уже пункт "Мои заявки"
+            const existingItem = Array.from(mainMenu.children).find(
+                li => li.querySelector('a')?.getAttribute('href') === 'application.html'
+            );
+            
+            if (!existingItem) {
+                // Создаем новый пункт меню
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = 'application.html';
+                a.textContent = 'Мои заявки';
+                li.appendChild(a);
+                
+                // Вставляем после калькулятора
+                const calculatorItem = Array.from(mainMenu.children).find(
+                    li => li.querySelector('a')?.getAttribute('href') === 'calculator.html'
+                );
+                
+                if (calculatorItem) {
+                    calculatorItem.insertAdjacentElement('afterend', li);
+                } else {
+                    mainMenu.appendChild(li);
+                }
+            }
+        }
+
+        // Удаление пункта "Мои заявки" из навигации
+        function removeRequestsMenuItem() {
+            const mainMenu = document.getElementById('mainMenu');
+            if (!mainMenu) return;
+            
+            const requestsItem = Array.from(mainMenu.children).find(
+                li => li.querySelector('a')?.getAttribute('href') === 'application.html'
+            );
+            
+            if (requestsItem) {
+                requestsItem.remove();
+            }
+        }
+
+        // Закрытие выпадающего меню при клике вне его
+        function handleClickOutside(e) {
+            const userMenu = document.getElementById('userMenuContainer');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (userMenu && dropdown && !userMenu.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        }
+
+        // Выход из системы
+        function logout() {
+            localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
+            resetUserInterface();
+            
+            // Перенаправляем на главную страницу
+            window.location.href = 'index.html';
+            
+            // Показываем уведомление
+            showNotification('Вы успешно вышли из системы');
+        }
+
+        // Показ уведомления
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background-color: #27ae60;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mainMenu = document.getElementById('mainMenu');
+        
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mainMenu.classList.toggle('active');
+                const icon = mobileMenuBtn.querySelector('i');
+                if (mainMenu.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+        }
+        
+        // Form submission
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Проверяем авторизацию
+                const userData = localStorage.getItem('user') || sessionStorage.getItem('user');
+                
+                if (userData) {
+                    alert('Спасибо! Ваша заявка отправлена. Мы свяжемся с вами в ближайшее время.');
+                    contactForm.reset();
+                } else {
+                    if (confirm('Для отправки заявки необходимо авторизоваться. Перейти на страницу входа?')) {
+                        window.location.href = 'auth.html';
+                    }
+                }
+            });
+        }
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (mainMenu && mainMenu.classList.contains('active')) {
+                        mainMenu.classList.remove('active');
+                        const icon = mobileMenuBtn.querySelector('i');
+                        if (icon) {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    }
+                }
+            });
+        });
+        
+        // Обработчик для кнопки выхода
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('#logoutBtn')) {
+                e.preventDefault();
+                logout();
+            }
+        });
+        
+        // Закрытие выпадающего меню при клике вне его
+        document.addEventListener('click', handleClickOutside);
+        
+        // Проверяем авторизацию при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            
+            // Добавляем стили для анимаций
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+                
+                @keyframes slideOut {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
