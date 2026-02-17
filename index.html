@@ -834,19 +834,6 @@
     }
 }
 
-// НОВАЯ ФУНКЦИЯ: управление видимостью пунктов меню
-function updateMenuVisibility() {
-    const navApplications = document.getElementById('navApplications');
-    if (!navApplications) return;
-    
-    if (currentUser) {
-        // Пользователь авторизован - показываем пункт "Мои заявки"
-        navApplications.style.display = 'list-item';
-    } else {
-        // Пользователь не авторизован - скрываем пункт "Мои заявки"
-        navApplications.style.display = 'none';
-    }
-}
 
         // Обновление интерфейса для авторизованного пользователя
         function updateUserInterface(user) {
@@ -917,34 +904,74 @@ function updateMenuVisibility() {
 
         // Добавление пункта "Мои заявки" в навигацию
         function addRequestsMenuItem() {
-            const mainMenu = document.getElementById('mainMenu');
-            if (!mainMenu) return;
-            
-            // Проверяем, есть ли уже пункт "Мои заявки"
-            const existingItem = Array.from(mainMenu.children).find(
-                li => li.querySelector('a')?.getAttribute('href') === 'application.html'
-            );
-            
-            if (!existingItem) {
-                // Создаем новый пункт меню
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = 'application.html';
-                a.textContent = 'Мои заявки';
-                li.appendChild(a);
-                
-                // Вставляем после калькулятора
-                const calculatorItem = Array.from(mainMenu.children).find(
-                    li => li.querySelector('a')?.getAttribute('href') === 'calculator.html'
-                );
-                
-                if (calculatorItem) {
-                    calculatorItem.insertAdjacentElement('afterend', li);
-                } else {
-                    mainMenu.appendChild(li);
-                }
-            }
+    console.log('addRequestsMenuItem вызвана');
+    const mainMenu = document.getElementById('mainMenu');
+    if (!mainMenu) {
+        console.log('mainMenu не найден!');
+        return;
+    }
+    
+    console.log('mainMenu найден, детей:', mainMenu.children.length);
+    
+    // Проверяем, не добавлен ли уже пункт "Мои заявки"
+    const existingItem = Array.from(mainMenu.children).find(li => {
+        const link = li.querySelector('a');
+        return link && (link.getAttribute('href') === 'application.html' || link.textContent.trim() === 'Мои заявки');
+    });
+    
+    if (existingItem) {
+        console.log('Пункт "Мои заявки" уже существует');
+        return;
+    }
+    
+    console.log('Создаем новый пункт "Мои заявки"');
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = 'application.html';
+    a.textContent = 'Мои заявки';
+    li.appendChild(a);
+    
+    // Ищем пункт "Калькулятор ВЭД" ПО ТЕКСТУ (более надежно)
+    let calculatorItem = null;
+    
+    // Способ 1: Поиск по тексту ссылки
+    for (let i = 0; i < mainMenu.children.length; i++) {
+        const item = mainMenu.children[i];
+        const link = item.querySelector('a');
+        if (link && link.textContent.trim() === 'Направления') {
+            calculatorItem = item;
+            console.log('Направления найдены по тексту!');
+            break;
         }
+    }
+    
+    // Способ 2: Если не нашли по тексту, ищем по href
+    if (!calculatorItem) {
+        calculatorItem = Array.from(mainMenu.children).find(
+            li => li.querySelector('a')?.getAttribute('href') === 'calculator.html'
+        );
+        if (calculatorItem) {
+            console.log('Калькулятор найден по href!');
+        }
+    }
+    
+    console.log('Пункт "Калькулятор ВЭД" найден:', calculatorItem ? 'да' : 'нет');
+    
+    if (calculatorItem) {
+        console.log('Вставляем пункт после калькулятора');
+        calculatorItem.insertAdjacentElement('afterend', li);
+        
+        // Проверяем результат
+        const newItems = Array.from(mainMenu.children).map(li => {
+            const link = li.querySelector('a');
+            return link ? link.textContent.trim() : 'без ссылки';
+        });
+        console.log('Новый порядок меню:', newItems);
+    } else {
+        console.log('Калькулятор не найден! Добавляем в конец');
+        mainMenu.appendChild(li);
+    }
+}
 
         // Удаление пункта "Мои заявки" из навигации
         function removeRequestsMenuItem() {
