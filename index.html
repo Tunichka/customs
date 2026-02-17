@@ -819,14 +819,17 @@
                 currentUser.id = currentUser.email === 'admin@example.com' ? 'admin1' : 'user1';
             }
             // Обновляем меню после успешной авторизации
+            updateUserInterface(currentUser);
             updateMenuVisibility();
         } catch (e) {
             console.error('Ошибка парсинга пользователя', e);
             currentUser = null;
+            resetUserInterface();
             updateMenuVisibility();
         }
     } else {
         currentUser = null;
+        resetUserInterface();
         updateMenuVisibility();
     }
 }
